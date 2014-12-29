@@ -14,6 +14,17 @@ define(function() {
 
             // Fire the loading
             head.appendChild(script);
-        }
+        },
+        format: function() {
+            if (arguments.length === 0) {
+                return '';
+            }
+            var formatStr = arguments[0];
+            var args = [].slice.call(arguments, 1);
+            for (var i = 0; i < args.length; i++) {
+                formatStr = formatStr.replace('{' + i + '}', args[i]);
+            }
+            return formatStr;
+        },
     };
 });

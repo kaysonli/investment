@@ -25,6 +25,6 @@ define(function() {
                 formatStr = formatStr.replace('{' + i + '}', args[i]);
             }
             return formatStr;
-        },
+        }
     };
 });

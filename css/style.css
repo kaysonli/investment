@@ -1,0 +1,27 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+#nav {
+    list-style: none;
+    width: 100%;
+    margin: auto;
+    margin-bottom: 20px;
+    border: 1px solid #aaa;
+}
+
+#nav li {
+    float: left;
+    margin-left: 20px;
+    border-left: 1px solid #ccc;
+}
+
+#nav a {
+    text-decoration: none;
+    color: #000;
+}
+
+.bar {
+    margin-bottom: 10px;
+    border: 1px solid blue;
+}

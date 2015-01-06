@@ -112,9 +112,9 @@ define(['./helper/util'], function(util) {
 
         optimalInvest: function(fundCode) {
 
-        }
+        },
 
-            fixedInvest: function(config) {
+        fixedInvest: function(config) {
             var fundCode = config.fundCode,
                 startDate = config.startDate,
                 endDate = config.endDate,

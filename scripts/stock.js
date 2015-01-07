@@ -929,9 +929,13 @@ define(['./helper/util'], function(util) {
             el.appendChild(liItem);
         }
         el.addEventListener('click', function(e) {
+            util.setLoading(true);
             var category = e.target.getAttribute('path');
             if (category !== undefined && category !== null) {
-                listCategories(category, container);
+                loadData(category, function() {
+                    listCategories(category, container);
+                    util.setLoading(false);
+                });
             }
         });
     }
@@ -939,28 +943,114 @@ define(['./helper/util'], function(util) {
     function listCategories(index, container) {
         container.innerHTML = '';
         var data = source[index].data;
+        var maxAmount = -1;
+        var bars = [];
+        var fragment = document.createDocumentFragment();
+        data.sort(function(a, b) {
+            return b.amount - a.amount;
+        });
         for (var i = 0; i < data.length; i++) {
+            var path = index + '-' + i;
             var div = document.createElement('div');
-            div.className = 'bar';
-            div.innerHTML = data[i].name;
-            div.setAttribute('path', index + '-' + i);
-            container.appendChild(div);
+            div.className = 'category clearfix';
+            var bar = document.createElement('div');
+            bar.className = 'main';
+            bar.setAttribute('path', path);
+            div.appendChild(bar);
+            div.insertAdjacentHTML('beforeend', util.format('<span class="title" path="{1}">{0}</span>', data[i].name, path));
+            div.setAttribute('path', path);
+            div.setAttribute('category', i);
+            div.setAttribute('amount', data[i].amount);
+            div.setAttribute('change', data[i].change);
+            fragment.appendChild(div);
+            if(data[i].amount > maxAmount) {
+                maxAmount = data[i].amount;
+            }
+            bars.push(bar);
+        }
+        container.appendChild(fragment);
+        var width = container.offsetWidth - 120;
+        for (var i = 0; i < bars.length; i++) {
+            var w = data[i].amount / maxAmount * width;
+            bars[i].style.width = ~~w + 'px';
+            bars[i].style.backgroundColor = getColor(data[i].change);
         }
     }
 
-    function openCategory(level0, level1) {
+    function getColor(change) {
+        var r = 255, g = 255, b = 255;
+        if(change >= 0) {
+            g = r - r * change / 0.1;
+            b = g;
+        } else {
+            r = g + g * change / 0.1;
+            b = r;
+        }
+        return util.format('rgb({0}, {1}, {2})', ~~r, ~~g, ~~b);
+    }
+
+    function showDetail(info) {
+        var tpl = ['<ul>',
+            '<li class="point"><span class="column">当前价：</span><span class="value">{0}</span></li>',
+            '<li class="point"><span class="column">涨跌幅：</span><span class="value">{1}%</span></li>',
+            '<li class="point"><span class="column">成交量：</span><span class="value">{2}万</span></li>',
+        '</ul>'].join('');
+        var content = util.format(tpl, info.price, info.change, info.amount);
+        var detailPanel = document.getElementById('detail');
+        if(detailPanel) {
+            detailPanel.style.display = 'block';
+            detailPanel.innerHTML = content;
+        }
+    }
+
+    function hideDetail() {
+        var detailPanel = document.getElementById('detail');
+        if(detailPanel) {
+            detailPanel.style.display = 'none';
+        }
+    }
+
+    function openCategory(level0, level1, container) {
         container.innerHTML = '';
+        var maxAmount = -1;
+        var bars = [];
+        var fragment = document.createDocumentFragment();
         var data = source[level0].data[level1].stocks;
+        data.sort(function(a, b) {
+            var infoA = getStockInfo(a),
+                infoB = getStockInfo(b);
+                return infoB.amount - infoA.amount;
+        });
         for (var i = 0; i < data.length; i++) {
             var div = document.createElement('div');
-            div.className = 'bar';
-            div.innerHTML = source[level0].name;
+            div.className = 'stock clearfix';
+            var bar = document.createElement('div');
+            bar.className = 'main';
+            bars.push(bar);
+            div.appendChild(bar);
+            var info = getStockInfo(data[i]);
+            if(info.amount > maxAmount) {
+                maxAmount = info.amount;
+            }
+            div.insertAdjacentHTML('beforeend', util.format('<span class="title">{0}</span>', info.name));
             div.setAttribute('path', level0 + '-' + level1 + '-' + i);
-            container.appendChild(div);
+            div.setAttribute('code', data[i]);
+            div.setAttribute('price', info.price);
+            div.setAttribute('amount', info.amount);
+            div.setAttribute('change', info.change);
+            fragment.appendChild(div);
+        }
+        container.appendChild(fragment);
+        var width = container.offsetWidth - 120;
+        for (var i = 0; i < bars.length; i++) {
+            var info = getStockInfo(data[i]);
+            var w = info.amount / maxAmount * width;
+            bars[i].style.width = ~~w + 'px';
+            bars[i].style.backgroundColor = getColor(info.change);
         }
     }
 
-    function buildLevels(navId, containerId) {
+    function setup(navId, containerId) {
         var navbar = document.getElementById(navId),
             container = document.getElementById(containerId);
         buildNavigation(navbar, container);
@@ -968,43 +1058,101 @@ define(['./helper/util'], function(util) {
             var path = e.target.getAttribute('path');
             if (path !== undefined && path !== null) {
                 var levels = path.split('-');
-                if(levels.length === 2) {
-                    openCategory(levels[0], levels[1]);
+                if (levels.length === 2) {
+                    openCategory(levels[0], levels[1], container);
                 }
             }
         });
     }
-    return {
-        setup: buildLevels,
-        loadData: function() {
-            var blocks = [],
-                ajaxList = [];
-            var allStocks = {};
-            for (var i = 0; i < source.length; i++) {
-                var category = source[i],
-                    data = category.data;
-                for (var j = 0; j < data.length; j++) {
-                    var stocks = data[j].stocks;
-                    var url = 'http://hq.sinajs.cn/list=';
-                    for (var k = 0; k < stocks.length; k++) {
-                        var code = stocks[k].toLowerCase();
-                        url += code + ',';
-                    }
-                    (function(url, contents) {
-                        loadScript(url, function() {
-                            var sum = 0;
-                            for (var i = 0; i < contents.stocks.length; i++) {
-                                var code = contents.stocks[i].toLowerCase();
-                                var str = window['hq_str_' + code];
-                                var parts = str.split(','),
-                                    amount = parseFloat(parts[9]);
-                                sum += amount;
-                            }
-                            contents.total = sum / 10000;
-                        });
-                    })(url, data[j]);
-                }
-            }
+
+    function getStockInfo(code) {
+        var str = window['hq_str_' + code];
+        if (str) {
+            var parts = str.split(',');
+            return {
+                name: parts[0],
+                price: parts[3] / 1,
+                change: (parts[3] - parts[2]) / parts[2],
+                high: parts[4] / 1,
+                low: parts[5] / 1,
+                amount: parts[9] / 10000
+            };
         }
+        return {};
+    }
+
+    var tasks = 0;
+    /*
+    0：”大秦铁路”，股票名字；
+    1：”27.55″，今日开盘价；
+    2：”27.25″，昨日收盘价；
+    3：”26.91″，当前价格；
+    4：”27.55″，今日最高价；
+    5：”26.20″，今日最低价；
+    6：”26.91″，竞买价，即“买一”报价；
+    7：”26.92″，竞卖价，即“卖一”报价；
+    8：”22114263″，成交的股票数，由于股票交易以一百股为基本单位，所以在使用时，通常把该值除以一百；
+    9：”589824680″，成交金额，单位为“元”，为了一目了然，通常以“万元”为成交金额的单位，所以通常把该值除以一万；
+    10：”4695″，“买一”申请4695股，即47手；
+    11：”26.91″，“买一”报价；
+    12：”57590″，“买二”
+    13：”26.90″，“买二”
+    14：”14700″，“买三”
+    15：”26.89″，“买三”
+    16：”14300″，“买四”
+    17：”26.88″，“买四”
+    18：”15100″，“买五”
+    19：”26.87″，“买五”
+    20：”3100″，“卖一”申报3100股，即31手；
+    21：”26.92″，“卖一”报价
+    (22, 23), (24, 25), (26,27), (28, 29)分别为“卖二”至“卖四的情况”
+    30：”2008-01-11″，日期；
+    31：”15:05:32″，时间；
+    */
+
+    function loadData(filter, callback) {
+        filter = filter || 0;
+        tasks = 0;
+        var category = source[filter],
+            data = category.data;
+        for (var j = 0; j < data.length; j++) {
+            var stocks = data[j].stocks;
+            var url = 'http://hq.sinajs.cn/list=';
+            for (var k = 0; k < stocks.length; k++) {
+                var code = stocks[k].toLowerCase();
+                url += code + ',';
+            }
+            (function(url, contents) {
+                util.loadScript(url, function() {
+                    ++tasks;
+                    var sum = 0,
+                        lastTotal = 0,
+                        currentTotal = 0;
+                    for (var i = 0; i < contents.stocks.length; i++) {
+                        var code = contents.stocks[i];
+                        var str = window['hq_str_' + code];
+                        var parts = str.split(','),
+                            amount = parseFloat(parts[9]);
+                        sum += amount;
+                        lastTotal += parts[2] / 1;
+                        currentTotal += parts[3] / 1;
+                    }
+                    contents.amount = sum / 10000;
+                    contents.change = (currentTotal - lastTotal) / lastTotal;
+                    if (tasks === data.length) {
+                        if (callback) {
+                            callback();
+                        }
+                    }
+                });
+            })(url, data[j]);
+        }
+    }
+
+    return {
+        setup: function() {
+            setup('nav', 'content');
+        },
+        getStockInfo: getStockInfo
     };
 });

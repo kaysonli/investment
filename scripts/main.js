@@ -1,4 +1,4 @@
-require(['./fund', './stock'], function(fund, stock) {
+require(['./fund', './stock', './helper/util'], function(fund, stock, util) {
     // fund.getList(function(list, openList, currencyList) {
     //     console.log(list, openList, currencyList);
     //     fund.getHistoricalValues('020001', 2014, function(values) {
@@ -18,5 +18,6 @@ require(['./fund', './stock'], function(fund, stock) {
     //     dividendType: 2, //1: 红利再投资，2：现金分红
     //     needfirst: true
     // });
-    stock.setup('nav', 'container');
+    stock.setup();
+    // util.setLoading(true);
 });

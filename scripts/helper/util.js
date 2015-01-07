@@ -25,6 +25,11 @@ define(function() {
                 formatStr = formatStr.replace('{' + i + '}', args[i]);
             }
             return formatStr;
+        },
+
+        setLoading: function(loading) {
+            var mask = document.getElementById('mask');
+            mask.style.display = loading ? 'block' : 'none';
         }
     };
 });

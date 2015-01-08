@@ -919,6 +919,13 @@ define(['./helper/util'], function(util) {
         }]
     }];
 
+    function setDisplayAttr(dom, path, amount, change, title) {
+        dom.setAttribute('path', path);
+        dom.setAttribute('amount', amount);
+        dom.setAttribute('change', change);
+        dom.setAttribute('_title', title);
+    }
+
     function buildNavigation(el, container) {
         for (var i = 0; i < source.length; i++) {
             var liItem = document.createElement('li');
@@ -951,63 +958,39 @@ define(['./helper/util'], function(util) {
         });
         for (var i = 0; i < data.length; i++) {
             var path = index + '-' + i;
+
             var div = document.createElement('div');
             div.className = 'category clearfix';
+            div.setAttribute('category', i);
+            setDisplayAttr(div, path, data[i].amount, data[i].change, data[i].name);
+
             var bar = document.createElement('div');
             bar.className = 'main';
-            bar.setAttribute('path', path);
+            setDisplayAttr(bar, path, data[i].amount, data[i].change, data[i].name);
+            bars.push(bar);
             div.appendChild(bar);
-            div.insertAdjacentHTML('beforeend', util.format('<span class="title" path="{1}">{0}</span>', data[i].name, path));
-            div.setAttribute('path', path);
-            div.setAttribute('category', i);
-            div.setAttribute('amount', data[i].amount);
-            div.setAttribute('change', data[i].change);
+            div.insertAdjacentHTML('beforeend', util.format('<span class="title" path="{1}" _title="{2}">{0}</span>', data[i].name, path, data[i].name));
+
             fragment.appendChild(div);
-            if(data[i].amount > maxAmount) {
+
+            if (data[i].amount > maxAmount) {
                 maxAmount = data[i].amount;
             }
-            bars.push(bar);
+            if (data[i].change > 0) {
+                toggleClass(div, 'up', 'down');
+            } else if (data[i].change < 0) {
+                toggleClass(div, 'down', 'up');
+            }
         }
         container.appendChild(fragment);
         var width = container.offsetWidth - 120;
-        for (var i = 0; i < bars.length; i++) {
-            var w = data[i].amount / maxAmount * width;
-            bars[i].style.width = ~~w + 'px';
-            bars[i].style.backgroundColor = getColor(data[i].change);
-        }
-    }
-
-    function getColor(change) {
-        var r = 255, g = 255, b = 255;
-        if(change >= 0) {
-            g = r - r * change / 0.1;
-            b = g;
-        } else {
-            r = g + g * change / 0.1;
-            b = r;
-        }
-        return util.format('rgb({0}, {1}, {2})', ~~r, ~~g, ~~b);
-    }
-
-    function showDetail(info) {
-        var tpl = ['<ul>',
-            '<li class="point"><span class="column">当前价：</span><span class="value">{0}</span></li>',
-            '<li class="point"><span class="column">涨跌幅：</span><span class="value">{1}%</span></li>',
-            '<li class="point"><span class="column">成交量：</span><span class="value">{2}万</span></li>',
-        '</ul>'].join('');
-        var content = util.format(tpl, info.price, info.change, info.amount);
-        var detailPanel = document.getElementById('detail');
-        if(detailPanel) {
-            detailPanel.style.display = 'block';
-            detailPanel.innerHTML = content;
-        }
-    }
-
-    function hideDetail() {
-        var detailPanel = document.getElementById('detail');
-        if(detailPanel) {
-            detailPanel.style.display = 'none';
-        }
+        setTimeout(function() {
+            for (var i = 0; i < bars.length; i++) {
+                var w = data[i].amount / maxAmount * width;
+                bars[i].style.width = ~~w + 'px';
+                bars[i].style.backgroundColor = getColor(data[i].change);
+            }
+        }, 0);
     }
 
     function openCategory(level0, level1, container) {
@@ -1019,34 +1002,95 @@ define(['./helper/util'], function(util) {
         data.sort(function(a, b) {
             var infoA = getStockInfo(a),
                 infoB = getStockInfo(b);
-                return infoB.amount - infoA.amount;
+            return infoB.amount - infoA.amount;
         });
         for (var i = 0; i < data.length; i++) {
+            var info = getStockInfo(data[i]);
+            var path = level0 + '-' + level1 + '-' + i;
+
             var div = document.createElement('div');
             div.className = 'stock clearfix';
+            div.setAttribute('code', info.code);
+            div.setAttribute('price', info.price);
+            setDisplayAttr(div, path, info.amount, info.change, info.name);
+
             var bar = document.createElement('div');
             bar.className = 'main';
+            setDisplayAttr(bar, path, info.amount, info.change, info.name);
             bars.push(bar);
             div.appendChild(bar);
-            var info = getStockInfo(data[i]);
-            if(info.amount > maxAmount) {
+            div.insertAdjacentHTML('beforeend', util.format('<span class="title">{0}</span>', info.name));
+
+            fragment.appendChild(div);
+
+            if (info.amount > maxAmount) {
                 maxAmount = info.amount;
             }
-            div.insertAdjacentHTML('beforeend', util.format('<span class="title">{0}</span>', info.name));
-            div.setAttribute('path', level0 + '-' + level1 + '-' + i);
-            div.setAttribute('code', data[i]);
-            div.setAttribute('price', info.price);
-            div.setAttribute('amount', info.amount);
-            div.setAttribute('change', info.change);
-            fragment.appendChild(div);
+
+            if (info.change > 0) {
+                toggleClass(div, 'up', 'down');
+            } else if (info.change < 0) {
+                toggleClass(div, 'down', 'up');
+            }
         }
         container.appendChild(fragment);
         var width = container.offsetWidth - 120;
-        for (var i = 0; i < bars.length; i++) {
-            var info = getStockInfo(data[i]);
-            var w = info.amount / maxAmount * width;
-            bars[i].style.width = ~~w + 'px';
-            bars[i].style.backgroundColor = getColor(info.change);
+        setTimeout(function() {
+            for (var i = 0; i < bars.length; i++) {
+                var info = getStockInfo(data[i]);
+                var w = info.amount / maxAmount * width;
+                bars[i].style.width = ~~w + 'px';
+                bars[i].style.backgroundColor = getColor(info.change);
+            }
+        }, 0);
+    }
+
+    function toggleClass(dom, add, remove) {
+        dom.classList.remove(remove);
+        dom.classList.add(add);
+    }
+
+    function getColor(change) {
+        var r = 255,
+            g = 255,
+            b = 255;
+        if (change >= 0) {
+            g = r - r * change / 0.1;
+            b = g;
+        } else {
+            r = g + g * change / 0.1;
+            b = r;
+        }
+        return util.format('rgb({0}, {1}, {2})', ~~r, ~~g, ~~b);
+    }
+
+    function showDetail(info, location) {
+        var tpl = ['<h3>{3}</h3>',
+            '       <ul>',
+            info.price !== null ? '<li class="point"><span class="column">当前价：</span><span class="value price">{0}</span></li>' : '',
+            '           <li class="point"><span class="column">涨跌幅：</span><span class="value price">{1}%</span></li>',
+            '           <li class="point"><span class="column">成交量：</span><span class="value">{2}万</span></li>',
+            '       </ul>'
+        ].join('');
+        var content = util.format(tpl, info.price, (+info.change * 100).toFixed(1), (+info.amount).toFixed(2), info.title);
+        var detailPanel = document.getElementById('detail');
+        if (detailPanel) {
+            detailPanel.style.display = 'block';
+            detailPanel.style.left = location.x + 'px';
+            detailPanel.style.top = location.y + 'px';
+            detailPanel.innerHTML = content;
+            if (info.change > 0) {
+                toggleClass(detailPanel, 'up', 'down');
+            } else if (info.change < 0) {
+                toggleClass(detailPanel, 'down', 'up');
+            }
+        }
+    }
+
+    function hideDetail() {
+        var detailPanel = document.getElementById('detail');
+        if (detailPanel) {
+            detailPanel.style.display = 'none';
         }
     }
 
@@ -1063,6 +1107,26 @@ define(['./helper/util'], function(util) {
                 }
             }
         });
+        container.addEventListener('mouseover', function(e) {
+            var price = e.target.getAttribute('price'),
+                amount = e.target.getAttribute('amount'),
+                change = e.target.getAttribute('change'),
+                title = e.target.getAttribute('_title');
+            if (change != null) {
+                showDetail({
+                    price: price,
+                    amount: amount,
+                    change: change,
+                    title: title
+                }, {
+                    x: e.pageX + 50,
+                    y: e.pageY - 50
+                });
+            }
+        });
+        container.addEventListener('mouseout', function(e) {
+            hideDetail();
+        });
     }
 
     function getStockInfo(code) {
@@ -1070,6 +1134,7 @@ define(['./helper/util'], function(util) {
         if (str) {
             var parts = str.split(',');
             return {
+                code: code,
                 name: parts[0],
                 price: parts[3] / 1,
                 change: (parts[3] - parts[2]) / parts[2],

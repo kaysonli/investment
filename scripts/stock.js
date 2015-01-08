@@ -927,18 +927,31 @@ define(['./helper/util'], function(util) {
     }
 
     function buildNavigation(el, container) {
+        var menuItems = [];
         for (var i = 0; i < source.length; i++) {
             var liItem = document.createElement('li');
+            menuItems.push(liItem);
             liItem.className = 'nav-item';
             liItem.id = 'category-' + i;
             liItem.setAttribute('path', i);
-            liItem.insertAdjacentHTML('beforeend', util.format('<a href="#" path="{1}">{0}</a>', source[i].category, i));
+            liItem.insertAdjacentHTML('beforeend', util.format('<a href="#" class="item" path="{1}">{0}</a>', source[i].category, i));
+            if (i === 0) {
+                toggleClass(liItem, 'selected', '');
+            }
             el.appendChild(liItem);
         }
         el.addEventListener('click', function(e) {
-            util.setLoading(true);
             var category = e.target.getAttribute('path');
             if (category !== undefined && category !== null) {
+                util.setLoading(true);
+                for (var i = 0; i < menuItems.length; i++) {
+                    if (+category === i) {
+                        toggleClass(menuItems[i], 'selected', '');
+                    } else {
+                        toggleClass(menuItems[i], '', 'selected');
+                    }
+                }
+                currentFilter = category;
                 loadData(category, function() {
                     listCategories(category, container);
                     util.setLoading(false);
@@ -1017,6 +1030,7 @@ define(['./helper/util'], function(util) {
             var bar = document.createElement('div');
             bar.className = 'main';
             setDisplayAttr(bar, path, info.amount, info.change, info.name);
+            bar.setAttribute('price', info.price);
             bars.push(bar);
             div.appendChild(bar);
             div.insertAdjacentHTML('beforeend', util.format('<span class="title">{0}</span>', info.name));
@@ -1046,8 +1060,12 @@ define(['./helper/util'], function(util) {
     }
 
     function toggleClass(dom, add, remove) {
-        dom.classList.remove(remove);
-        dom.classList.add(add);
+        if (remove) {
+            dom.classList.remove(remove);
+        }
+        if (add) {
+            add && dom.classList.add(add);
+        }
     }
 
     function getColor(change) {
@@ -1094,15 +1112,41 @@ define(['./helper/util'], function(util) {
         }
     }
 
+    function expand() {
+        util.setLoading(true);
+        loadData(currentFilter, function() {
+            listCategories(currentFilter, domMain);
+            if (currentCategory !== undefined) {
+                openCategory(currentFilter, currentCategory, domMain);
+            }
+            util.setLoading(false);
+        });
+    }
+
+    function startTimer(interval) {
+        expand();
+        timer = setInterval(function() {
+            expand();
+        }, interval || 5000);
+    }
+
+    function stopTimer() {
+        clearInterval(timer);
+    }
+
     function setup(navId, containerId) {
         var navbar = document.getElementById(navId),
             container = document.getElementById(containerId);
+        domNav = navbar;
+        domMain = container;
         buildNavigation(navbar, container);
         container.addEventListener('click', function(e) {
             var path = e.target.getAttribute('path');
             if (path !== undefined && path !== null) {
                 var levels = path.split('-');
                 if (levels.length === 2) {
+                    currentFilter = levels[0];
+                    currentCategory = levels[1];
                     openCategory(levels[0], levels[1], container);
                 }
             }
@@ -1147,6 +1191,10 @@ define(['./helper/util'], function(util) {
     }
 
     var tasks = 0;
+    var domNav, domMain;
+    var currentFilter = 0,
+        currentCategory;
+    var timer;
     /*
     0：”大秦铁路”，股票名字；
     1：”27.55″，今日开盘价；
@@ -1215,8 +1263,15 @@ define(['./helper/util'], function(util) {
     }
 
     return {
-        setup: function() {
+        setup: function(autoRefresh, interval) {
             setup('nav', 'content');
+            if (autoRefresh) {
+                startTimer(interval);
+            }
+        },
+        setInterval: function(interval) {
+            stopTimer();
+            startTimer(interval);
         },
         getStockInfo: getStockInfo
     };

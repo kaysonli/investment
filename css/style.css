@@ -31,14 +31,22 @@ ul {
     margin: 20px auto;
 }
 
-#nav li {
+.nav-item {
     text-align: center;
     float: left;
     padding: 0 10px;
     border-left: 1px solid #ccc;
 }
 
-#nav a {
+.selected {
+    background-color: #00f;
+}
+
+.selected a.item {
+    color: #fff;
+}
+
+a.item {
     text-decoration: none;
     color: #000;
 }

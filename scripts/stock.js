@@ -943,7 +943,7 @@ define(['./helper/util'], function(util) {
         el.addEventListener('click', function(e) {
             var category = e.target.getAttribute('path');
             if (category !== undefined && category !== null) {
-                util.setLoading(true);
+                currentCategory = undefined;
                 for (var i = 0; i < menuItems.length; i++) {
                     if (+category === i) {
                         toggleClass(menuItems[i], 'selected', '');
@@ -952,10 +952,7 @@ define(['./helper/util'], function(util) {
                     }
                 }
                 currentFilter = category;
-                loadData(category, function() {
-                    listCategories(category, container);
-                    util.setLoading(false);
-                });
+                listCategories(currentFilter, domMain);
             }
         });
     }
@@ -1018,19 +1015,21 @@ define(['./helper/util'], function(util) {
             return infoB.amount - infoA.amount;
         });
         for (var i = 0; i < data.length; i++) {
-            var info = getStockInfo(data[i]);
+            var info = getStockInfo(data[i]),
+                displayName = info.name + ' ' + info.code;
             var path = level0 + '-' + level1 + '-' + i;
 
             var div = document.createElement('div');
             div.className = 'stock clearfix';
             div.setAttribute('code', info.code);
             div.setAttribute('price', info.price);
-            setDisplayAttr(div, path, info.amount, info.change, info.name);
+            setDisplayAttr(div, path, info.amount, info.change, displayName);
 
             var bar = document.createElement('div');
             bar.className = 'main';
-            setDisplayAttr(bar, path, info.amount, info.change, info.name);
+            setDisplayAttr(bar, path, info.amount, info.change, displayName);
             bar.setAttribute('price', info.price);
+            bar.setAttribute('code', info.code);
             bars.push(bar);
             div.appendChild(bar);
             div.insertAdjacentHTML('beforeend', util.format('<span class="title">{0}</span>', info.name));
@@ -1061,10 +1060,14 @@ define(['./helper/util'], function(util) {
 
     function toggleClass(dom, add, remove) {
         if (remove) {
-            dom.classList.remove(remove);
+            // dom.classList.remove(remove);
+            dom.className.replace(remove, '');
         }
         if (add) {
-            add && dom.classList.add(add);
+            // add && dom.classList.add(add);
+            var arr = dom.className.split(' ');
+            arr.push(add);
+            dom.className = arr.join(' ');
         }
     }
 
@@ -1101,6 +1104,9 @@ define(['./helper/util'], function(util) {
                 toggleClass(detailPanel, 'up', 'down');
             } else if (info.change < 0) {
                 toggleClass(detailPanel, 'down', 'up');
+            } else {
+                toggleClass(detailPanel, '', 'up');
+                toggleClass(detailPanel, '', 'down');
             }
         }
     }
@@ -1159,7 +1165,7 @@ define(['./helper/util'], function(util) {
             if (change != null) {
                 showDetail({
                     price: price,
-                    amount: amount,
+                    amount: amount / 10000,
                     change: change,
                     title: title
                 }, {
@@ -1171,6 +1177,15 @@ define(['./helper/util'], function(util) {
         container.addEventListener('mouseout', function(e) {
             hideDetail();
         });
+        var btnUp = document.getElementById('btnUp'),
+            btnRfresh =document.getElementById('btnRefresh');
+        btnUp.addEventListener('click', function() {
+            currentCategory = undefined;
+            listCategories(currentFilter, domMain);
+        });
+        btnRfresh.addEventListener('click', function() {
+            expand();
+        });
     }
 
     function getStockInfo(code) {
@@ -1180,11 +1195,12 @@ define(['./helper/util'], function(util) {
             return {
                 code: code,
                 name: parts[0],
-                price: parts[3] / 1,
+                price: +parts[3],
+                lastPrice: +parts[2],
                 change: (parts[3] - parts[2]) / parts[2],
-                high: parts[4] / 1,
-                low: parts[5] / 1,
-                amount: parts[9] / 10000
+                high: +parts[4],
+                low: +parts[5],
+                amount: +parts[9]
             };
         }
         return {};
@@ -1242,23 +1258,46 @@ define(['./helper/util'], function(util) {
                         lastTotal = 0,
                         currentTotal = 0;
                     for (var i = 0; i < contents.stocks.length; i++) {
-                        var code = contents.stocks[i];
-                        var str = window['hq_str_' + code];
-                        var parts = str.split(','),
-                            amount = parseFloat(parts[9]);
-                        sum += amount;
-                        lastTotal += parts[2] / 1;
-                        currentTotal += parts[3] / 1;
+                        var code = contents.stocks[i],
+                            info = getStockInfo(code);
+                        sum += info.amount || 0;
+                        lastTotal += info.lastPrice || 0;
+                        currentTotal += info.price || 0;
                     }
                     contents.amount = sum / 10000;
                     contents.change = (currentTotal - lastTotal) / lastTotal;
                     if (tasks === data.length) {
                         if (callback) {
                             callback();
+                            updateSource(filter);
                         }
                     }
                 });
             })(url, data[j]);
+        }
+    }
+
+    function updateSource(exclude) {
+        for (var i = 0; i < source.length; i++) {
+            if(i === exclude) {
+                continue;
+            }
+            var data = source[i].data;
+            for (var j = 0; j < data.length; j++) {
+                var contents = data[j],
+                    sum = 0,
+                    lastTotal = 0,
+                    currentTotal = 0;
+                for (var k = 0; k < contents.stocks.length; k++) {
+                    var code = contents.stocks[k],
+                        info = getStockInfo(code);
+                    sum += info.amount;
+                    lastTotal += info.lastPrice;
+                    currentTotal += info.price;
+                    contents.amount = sum / 10000;
+                    contents.change = (currentTotal - lastTotal) / lastTotal;
+                }
+            }
         }
     }
 
@@ -1268,6 +1307,7 @@ define(['./helper/util'], function(util) {
             if (autoRefresh) {
                 startTimer(interval);
             }
+            expand();
         },
         setInterval: function(interval) {
             stopTimer();

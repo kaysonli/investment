@@ -16,19 +16,25 @@ ul {
     height: 100%;
     width: 1px;
     transition: width 1s;
+    border-width: 1px;
+    border-style: solid;
 }
 
 .title {
     display: inline-block;
     position: absolute;
     right: 0;
-    top: 5px;
+    top: 2px;
 }
 
 #nav {
     list-style: none;
     width: 100%;
     margin: 20px auto;
+}
+
+#content {
+    margin-top: 10px;
 }
 
 .nav-item {
@@ -52,8 +58,8 @@ a.item {
 }
 
 .category, .stock {
-    height: 25px;
-    margin-bottom: 10px;
+    height: 20px;
+    margin-bottom: 3px;
     cursor: pointer;
     box-sizing: border-box;
     position: relative;
@@ -126,9 +132,43 @@ a.item {
 }
 
 .up .main {
-    border: 1px solid #f00;
+    border-color: #f00;
 }
 
 .down .main {
-    border: 1px solid #0f0;
+    border-color: #0f0;
+}
+
+.icon-back, .icon-refresh {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    vertical-align: text-top;
+    background-image: url(../images/glyphicons-halflings.png);
+    background-repeat: no-repeat;
+    margin-top: 1px;
+}
+
+.icon-back {
+    background-position: -432px -72px;
+}
+
+.icon-refresh {
+    background-position: -240px -24px;
+}
+
+.btn-group {
+    position: relative;
+}
+
+.btn {
+    display: inline-block;
+    padding: 2px 4px;
+    margin-bottom: 0;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
 }

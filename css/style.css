@@ -33,6 +33,11 @@ ul {
     margin: 20px auto;
 }
 
+.sort {
+    display: inline-block;
+    width: 200px;
+}
+
 #content {
     margin-top: 10px;
 }
@@ -52,9 +57,15 @@ ul {
     color: #fff;
 }
 
-a.item {
+a {
     text-decoration: none;
     color: #000;
+}
+
+.sort a {
+    display: inline-block;
+    border: 1px solid #ccc;
+    padding: 2px;
 }
 
 .category, .stock {
@@ -119,7 +130,7 @@ a.item {
     color: #f00;
 }
 
-.up .price:after {
+.up .price:after, a.asc:after {
     content: '↑'
 }
 
@@ -127,7 +138,7 @@ a.item {
     color: #0f0;
 }
 
-.down .price:after {
+.down .price:after, a.desc:after {
     content: '↓'
 }
 
@@ -160,6 +171,8 @@ a.item {
 
 .btn-group {
     position: relative;
+    display: inline-block;
+    width: 200px;
 }
 
 .btn {

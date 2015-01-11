@@ -11,13 +11,21 @@
 <body>
     <div class="container">
         <ul id="nav" class="clearfix"></ul>
-        <div class="btn-group">
-            <button class="btn" id="btnUp">
-                <i class="icon-back"></i> 返回
-            </button>
-            <button class="btn" id="btnRefresh">
-                <i class="icon-refresh"></i> 刷新
-            </button>
+        <div class="actions clearfix">
+            <div id="sort" class="sort">
+                <a class="amount desc" sort="amount" href="#" id="btnAmount">成交量
+                </a>
+                <a class="change desc" sort="change" href="#" id="btnChange">涨跌幅
+                </a>
+            </div>
+            <div class="btn-group">
+                <button class="btn" id="btnUp">
+                    <i class="icon-back"></i> 返回
+                </button>
+                <button class="btn" id="btnRefresh">
+                    <i class="icon-refresh"></i> 刷新
+                </button>
+            </div>
         </div>
         <div id="content"></div>
     </div>

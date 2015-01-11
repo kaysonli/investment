@@ -30,6 +30,37 @@ define(function() {
         setLoading: function(loading) {
             var mask = document.getElementById('mask');
             mask.style.display = loading ? 'block' : 'none';
+        },
+
+        hasClass: function(dom, cls) {
+            return dom.className.indexOf(cls) > -1;
+        },
+
+        addClass: function(dom, cls) {
+            var arr = dom.className.split(' ');
+            if (dom.className.indexOf(add) < 0) {
+                arr.push(cls);
+            }
+            dom.className = arr.join(' ');
+        },
+
+        removeClass: function(dom, cls) {
+            dom.className = dom.className.replace(new RegExp(remove, 'g'), '');
+        },
+
+        toggleClass: function(dom, add, remove) {
+            if (remove) {
+                // dom.classList.remove(remove);
+                dom.className = dom.className.replace(new RegExp(remove, 'g'), '');
+            }
+            if (add) {
+                // add && dom.classList.add(add);
+                var arr = dom.className.split(' ');
+                if (dom.className.indexOf(add) < 0) {
+                    arr.push(add);
+                }
+                dom.className = arr.join(' ');
+            }
         }
     };
 });

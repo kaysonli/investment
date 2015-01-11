@@ -936,7 +936,7 @@ define(['./helper/util'], function(util) {
             liItem.setAttribute('path', i);
             liItem.insertAdjacentHTML('beforeend', util.format('<a href="#" class="item" path="{1}">{0}</a>', source[i].category, i));
             if (i === 0) {
-                toggleClass(liItem, 'selected', '');
+                util.toggleClass(liItem, 'selected', '');
             }
             el.appendChild(liItem);
         }
@@ -946,9 +946,9 @@ define(['./helper/util'], function(util) {
                 currentCategory = undefined;
                 for (var i = 0; i < menuItems.length; i++) {
                     if (+category === i) {
-                        toggleClass(menuItems[i], 'selected', '');
+                        util.toggleClass(menuItems[i], 'selected', '');
                     } else {
-                        toggleClass(menuItems[i], '', 'selected');
+                        util.toggleClass(menuItems[i], '', 'selected');
                     }
                 }
                 currentFilter = category;
@@ -963,9 +963,6 @@ define(['./helper/util'], function(util) {
         var maxAmount = -1;
         var bars = [];
         var fragment = document.createDocumentFragment();
-        data.sort(function(a, b) {
-            return b.amount - a.amount;
-        });
         for (var i = 0; i < data.length; i++) {
             var path = index + '-' + i;
 
@@ -987,9 +984,9 @@ define(['./helper/util'], function(util) {
                 maxAmount = data[i].amount;
             }
             if (data[i].change > 0) {
-                toggleClass(div, 'up', 'down');
+                util.toggleClass(div, 'up', 'down');
             } else if (data[i].change < 0) {
-                toggleClass(div, 'down', 'up');
+                util.toggleClass(div, 'down', 'up');
             }
         }
         container.appendChild(fragment);
@@ -1008,12 +1005,8 @@ define(['./helper/util'], function(util) {
         var maxAmount = -1;
         var bars = [];
         var fragment = document.createDocumentFragment();
-        var data = source[level0].data[level1].stocks;
-        data.sort(function(a, b) {
-            var infoA = getStockInfo(a),
-                infoB = getStockInfo(b);
-            return infoB.amount - infoA.amount;
-        });
+        // var data = source[level0].data[level1].stocks;
+        var data = currentCategory.stocks;
         for (var i = 0; i < data.length; i++) {
             var info = getStockInfo(data[i]),
                 displayName = info.name + ' ' + info.code;
@@ -1041,9 +1034,9 @@ define(['./helper/util'], function(util) {
             }
 
             if (info.change > 0) {
-                toggleClass(div, 'up', 'down');
+                util.toggleClass(div, 'up', 'down');
             } else if (info.change < 0) {
-                toggleClass(div, 'down', 'up');
+                util.toggleClass(div, 'down', 'up');
             }
         }
         container.appendChild(fragment);
@@ -1056,19 +1049,6 @@ define(['./helper/util'], function(util) {
                 bars[i].style.backgroundColor = getColor(info.change);
             }
         }, 0);
-    }
-
-    function toggleClass(dom, add, remove) {
-        if (remove) {
-            // dom.classList.remove(remove);
-            dom.className.replace(remove, '');
-        }
-        if (add) {
-            // add && dom.classList.add(add);
-            var arr = dom.className.split(' ');
-            arr.push(add);
-            dom.className = arr.join(' ');
-        }
     }
 
     function getColor(change) {
@@ -1101,12 +1081,12 @@ define(['./helper/util'], function(util) {
             detailPanel.style.top = location.y + 'px';
             detailPanel.innerHTML = content;
             if (info.change > 0) {
-                toggleClass(detailPanel, 'up', 'down');
+                util.toggleClass(detailPanel, 'up', 'down');
             } else if (info.change < 0) {
-                toggleClass(detailPanel, 'down', 'up');
+                util.toggleClass(detailPanel, 'down', 'up');
             } else {
-                toggleClass(detailPanel, '', 'up');
-                toggleClass(detailPanel, '', 'down');
+                util.toggleClass(detailPanel, '', 'up');
+                util.toggleClass(detailPanel, '', 'down');
             }
         }
     }
@@ -1119,20 +1099,25 @@ define(['./helper/util'], function(util) {
     }
 
     function expand() {
+        if (currentCategory !== undefined) {
+            openCategory(currentFilter, currentCategory, domMain);
+        } else {
+            listCategories(currentFilter, domMain);
+        }
+    }
+
+    function refreshData() {
         util.setLoading(true);
         loadData(currentFilter, function() {
-            listCategories(currentFilter, domMain);
-            if (currentCategory !== undefined) {
-                openCategory(currentFilter, currentCategory, domMain);
-            }
+            expand();
             util.setLoading(false);
         });
     }
 
     function startTimer(interval) {
-        expand();
+        refreshData();
         timer = setInterval(function() {
-            expand();
+            refreshData();
         }, interval || 5000);
     }
 
@@ -1152,7 +1137,7 @@ define(['./helper/util'], function(util) {
                 var levels = path.split('-');
                 if (levels.length === 2) {
                     currentFilter = levels[0];
-                    currentCategory = levels[1];
+                    currentCategory = source[levels[0]].data[levels[1]];
                     openCategory(levels[0], levels[1], container);
                 }
             }
@@ -1178,13 +1163,35 @@ define(['./helper/util'], function(util) {
             hideDetail();
         });
         var btnUp = document.getElementById('btnUp'),
-            btnRfresh =document.getElementById('btnRefresh');
+            btnRfresh = document.getElementById('btnRefresh'),
+            sortBar = document.getElementById('sort');
         btnUp.addEventListener('click', function() {
             currentCategory = undefined;
             listCategories(currentFilter, domMain);
         });
         btnRfresh.addEventListener('click', function() {
-            expand();
+            refreshData();
+        });
+        sortBar.addEventListener('click', function(e) {
+            var order = 'asc',
+                sortName = e.target.getAttribute('sort');
+            if (sortName) {
+                if (util.hasClass(e.target, 'asc')) {
+                    util.toggleClass(e.target, 'desc', 'asc');
+                    order = 'desc';
+                } else {
+                    util.toggleClass(e.target, 'asc', 'desc');
+                    order = 'asc';
+                }
+                gSortName = sortName;
+                gSortOrder = order;
+                console.time('updateSource');
+                updateSource(sortName, order);
+                console.timeEnd('updateSource');
+                console.time('expand');
+                expand();
+                console.timeEnd('expand');
+            }
         });
     }
 
@@ -1211,6 +1218,7 @@ define(['./helper/util'], function(util) {
     var currentFilter = 0,
         currentCategory;
     var timer;
+    var gSortName, gSortOrder;
     /*
     0：”大秦铁路”，股票名字；
     1：”27.55″，今日开盘价；
@@ -1254,50 +1262,57 @@ define(['./helper/util'], function(util) {
             (function(url, contents) {
                 util.loadScript(url, function() {
                     ++tasks;
-                    var sum = 0,
-                        lastTotal = 0,
-                        currentTotal = 0;
-                    for (var i = 0; i < contents.stocks.length; i++) {
-                        var code = contents.stocks[i],
-                            info = getStockInfo(code);
-                        sum += info.amount || 0;
-                        lastTotal += info.lastPrice || 0;
-                        currentTotal += info.price || 0;
-                    }
-                    contents.amount = sum / 10000;
-                    contents.change = (currentTotal - lastTotal) / lastTotal;
                     if (tasks === data.length) {
                         if (callback) {
+                            updateSource(gSortName, gSortOrder);
                             callback();
-                            updateSource(filter);
                         }
                     }
                 });
             })(url, data[j]);
         }
+        // sortCategories(data);
     }
 
-    function updateSource(exclude) {
+    function sortStocks(stocks, sortName, sortOrder) {
+        stocks.sort(function(a, b) {
+            var infoA = getStockInfo(a),
+                infoB = getStockInfo(b);
+            var ret = infoA[sortName] - infoB[sortName];
+            return sortOrder == 'asc' ? ret : -ret;
+        });
+    }
+
+    function sortCategories(categories, sortName, sortOrder) {
+        categories.sort(function(a, b) {
+            var ret = a[sortName] - b[sortName];
+            return sortOrder == 'asc' ? ret : -ret;
+        });
+    }
+
+    function updateSource(sortName, sortOrder) {
+        sortName = sortName || 'amount';
+        sortOrder = sortOrder || 'desc';
         for (var i = 0; i < source.length; i++) {
-            if(i === exclude) {
-                continue;
-            }
             var data = source[i].data;
             for (var j = 0; j < data.length; j++) {
                 var contents = data[j],
+                    stocks = contents.stocks,
                     sum = 0,
                     lastTotal = 0,
                     currentTotal = 0;
-                for (var k = 0; k < contents.stocks.length; k++) {
-                    var code = contents.stocks[k],
+                for (var k = 0; k < stocks.length; k++) {
+                    var code = stocks[k],
                         info = getStockInfo(code);
                     sum += info.amount;
                     lastTotal += info.lastPrice;
                     currentTotal += info.price;
-                    contents.amount = sum / 10000;
+                    contents.amount = sum;
                     contents.change = (currentTotal - lastTotal) / lastTotal;
                 }
+                sortStocks(stocks, sortName, sortOrder);
             }
+            sortCategories(data, sortName, sortOrder);
         }
     }
 
@@ -1307,7 +1322,7 @@ define(['./helper/util'], function(util) {
             if (autoRefresh) {
                 startTimer(interval);
             }
-            expand();
+            refreshData();
         },
         setInterval: function(interval) {
             stopTimer();

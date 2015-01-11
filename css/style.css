@@ -12,6 +12,10 @@ ul {
     margin: auto;
 }
 
+.actions {
+    position: relative;
+}
+
 .main {
     height: 100%;
     width: 1px;
@@ -184,4 +188,18 @@ a {
     text-align: center;
     vertical-align: middle;
     cursor: pointer;
+}
+
+.legend {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+}
+
+.legend-bar {
+    display: inline-block;
+    width: 200px;
+    height: 15px;
+    background: -webkit-linear-gradient(left,#0f0,#f00);
+    background: -moz-linear-gradient(left,#0f0,#f00);
 }

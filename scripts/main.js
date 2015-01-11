@@ -18,6 +18,8 @@ require(['./fund', './stock', './helper/util'], function(fund, stock, util) {
     //     dividendType: 2, //1: 红利再投资，2：现金分红
     //     needfirst: true
     // });
-    stock.setup(false, 30000);
+    var autoChk = document.getElementById('auto');
+    var freq = document.getElementById('freq').value;
+    stock.setup(autoChk.checked, freq * 1000);
     // util.setLoading(true);
 });

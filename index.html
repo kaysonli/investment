@@ -20,11 +20,18 @@
             </div>
             <div class="btn-group">
                 <button class="btn" id="btnUp">
-                    <i class="icon-back"></i> 返回
+                    <i class="icon-back"></i> 返回上级
                 </button>
                 <button class="btn" id="btnRefresh">
                     <i class="icon-refresh"></i> 刷新
                 </button>
+                <input type="checkbox" id="auto" /><label for="auto">自动刷新</label>
+                <select id="freq">
+                    <option value="5">5s</option>
+                    <option value="10">10s</option>
+                    <option value="15">15s</option>
+                    <option value="30">30s</option>
+                </select>
             </div>
         </div>
         <div id="content"></div>

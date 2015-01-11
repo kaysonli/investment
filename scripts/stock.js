@@ -1193,6 +1193,21 @@ define(['./helper/util'], function(util) {
                 console.timeEnd('expand');
             }
         });
+
+        var autoChk = document.getElementById('auto');
+        autoChk.addEventListener('click', function() {
+            if(this.checked) {
+                var freq = document.getElementById('freq').value;
+                startTimer(freq * 1000);
+            } else {
+                stopTimer();
+            }
+        });
+        var freqSelect = document.getElementById('freq');
+        freqSelect.addEventListener('change', function() {
+            stopTimer();
+            startTimer(this.value * 1000);
+        });
     }
 
     function getStockInfo(code) {

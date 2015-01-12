@@ -61,6 +61,31 @@ define(function() {
                 }
                 dom.className = arr.join(' ');
             }
+        },
+        notify: function(title, body, duration) {
+            if (!Notification) {
+                alert('Please us a modern version of Chrome, Firefox, Opera or Firefox.');
+                return;
+            }
+
+            if (Notification.permission !== "granted")
+                Notification.requestPermission();
+
+            var notification = new Notification(title || '', {
+                // icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+                width: 90,
+                tag: 'quotation',
+                body: body,
+            });
+
+
+            notification.onclick = function() {
+                // window.open("http://stackoverflow.com/a/13328397/1269037");
+            };
+
+            setTimeout(function() {
+                // notification.close();
+            }, duration || 2000);
         }
     };
 });

@@ -1110,6 +1110,7 @@ define(['./helper/util'], function(util) {
         util.setLoading(true);
         loadData(currentFilter, function() {
             expand();
+            document.getElementById('time').innerHTML = refreshTime;
             util.setLoading(false);
         });
     }
@@ -1222,7 +1223,8 @@ define(['./helper/util'], function(util) {
                 change: (parts[3] - parts[2]) / parts[2],
                 high: +parts[4],
                 low: +parts[5],
-                amount: +parts[9]
+                amount: +parts[9],
+                time: parts[31]
             };
         }
         return {};
@@ -1234,6 +1236,7 @@ define(['./helper/util'], function(util) {
         currentCategory;
     var timer;
     var gSortName, gSortOrder;
+    var refreshTime;
     /*
     0：”大秦铁路”，股票名字；
     1：”27.55″，今日开盘价；
@@ -1324,6 +1327,7 @@ define(['./helper/util'], function(util) {
                     currentTotal += info.price;
                     contents.amount = sum;
                     contents.change = (currentTotal - lastTotal) / lastTotal;
+                    refreshTime = info.time;
                 }
                 sortStocks(stocks, sortName, sortOrder);
             }

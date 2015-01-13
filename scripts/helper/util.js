@@ -9,8 +9,23 @@ define(function() {
 
             // Then bind the event to the callback function.
             // There are several events for cross browser compatibility.
-            script.onreadystatechange = callback;
-            script.onload = callback;
+            script.onreadystatechange = script.onload = function() {
+                // Remove the script
+                if (script.parentNode) {
+                    script.parentNode.removeChild(script);
+                }
+                if(callback) {
+                    callback();
+                }
+            };
+
+            if(script.addEventListener) {
+                script.addEventListener('error', function() {
+                    if(callback) {
+                        callback();
+                    }
+                });
+            }
 
             // Fire the loading
             head.appendChild(script);
@@ -62,7 +77,7 @@ define(function() {
                 dom.className = arr.join(' ');
             }
         },
-        notify: function(title, body, duration) {
+        notify: function(args) {
             if (!Notification) {
                 alert('Please us a modern version of Chrome, Firefox, Opera or Firefox.');
                 return;
@@ -71,21 +86,24 @@ define(function() {
             if (Notification.permission !== "granted")
                 Notification.requestPermission();
 
-            var notification = new Notification(title || '', {
-                // icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
-                width: 90,
-                tag: 'quotation',
-                body: body,
+            var notification = new Notification(args.title || '', {
+                icon: args.icon,
+                tag: args.tag,
+                body: args.body,
             });
 
 
             notification.onclick = function() {
                 // window.open("http://stackoverflow.com/a/13328397/1269037");
+                if(args.onclick) {
+                    args.onclick();
+                }
             };
-
-            setTimeout(function() {
-                // notification.close();
-            }, duration || 2000);
+            if (args.duration) {
+                setTimeout(function() {
+                    notification.close();
+                }, args.duration);
+            }
         }
     };
 });

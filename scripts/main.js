@@ -1,4 +1,4 @@
-require(['./fund', './stock', './helper/util'], function(fund, stock, util) {
+require(['./fund', './stock', './helper/util', './estimate'], function(fund, stock, util, estimate) {
     // fund.getList(function(list, openList, currencyList) {
     //     console.log(list, openList, currencyList);
     //     fund.getHistoricalValues('020001', 2014, function(values) {
@@ -21,8 +21,7 @@ require(['./fund', './stock', './helper/util'], function(fund, stock, util) {
     var autoChk = document.getElementById('auto');
     var freq = document.getElementById('freq').value;
     stock.setup(autoChk.checked, freq * 1000);
-    // setInterval(function() {
-    //     //util.notify('Hello', new Date());
-    // }, 3000);
-    // util.setLoading(true);
+    setInterval(function() {
+        estimate.display();
+    }, 30000);
 });

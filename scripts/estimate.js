@@ -73,6 +73,27 @@ define(['./helper/util', './quotation'], function(util, quote) {
         shares: 1400
     }];
 
+    function saveFunds(fundShares) {
+        if (localStorage) {
+            localStorage.setItem('fund', JSON.stringify(fundShares));
+        } else {
+            util.setCookie('fund', JSON.stringify(fundShares));
+        }
+    }
+
+    function getFunds() {
+        var str = '{}';
+        if (localStorage) {
+            str = localStorage.getItem('fund');
+        } else {
+            str = util.getCookie('fund');
+        }
+        if(str) {
+            return JSON.parse(str);
+        }
+        return null;
+    }
+
     function getFundShares() {
         var funds = [];
         var rows = $("#m_Table_open tr[code]");

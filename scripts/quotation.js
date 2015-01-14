@@ -2,9 +2,9 @@ define(['./helper/util'], function(util) {
     function fundQuotation(funds, callback) {
         var counter = 0;
         for (var i = 0; i < funds.length; i++) {
-            var url = 'http://hqqd.fund123.cn/HQ_EV_{0}.js';
+            var url = 'http://hqqd.fund123.cn/HQ_EV_{0}.js?t={1}';
             var code = funds[i].code || funds[i];
-            url = util.format(url, code);
+            url = util.format(url, code, +new Date);
             util.loadScript(url, function() {
                 ++counter;
                 if (counter === funds.length) {

@@ -21,6 +21,8 @@ require(['./fund', './stock', './helper/util', './estimate'], function(fund, sto
     var autoChk = document.getElementById('auto');
     var freq = document.getElementById('freq').value;
     stock.setup(autoChk.checked, freq * 1000);
+
+    estimate.display();
     setInterval(function() {
         estimate.display();
     }, 30000);

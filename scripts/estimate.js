@@ -109,32 +109,36 @@ define(['./helper/util', './quotation'], function(util, quote) {
             var reward = funds[i].shares * (netvalue - netvalue / (1 + rate));
             funds[i].estimateReward = +reward.toFixed(2);
             estimatedSum += reward;
-            netvalue = ev[3], rate = ev[4].replace('%', '') / 100;
-            var reward = funds[i].shares * (netvalue - netvalue / (1 + rate));
-            funds[i].reward = reward;
             funds[i].increaseRate = ev[6];
             funds[i].estimatedTotalRate = (parse(funds[i].totalRewardRate) + parse(ev[6])).toFixed(2) + '%';
             sum += reward;
         }
-        funds.push({
+        funds.sum = sum;
+        funds.estimatedSum = estimatedSum;
+        var stats = funds.slice();
+        stats.push({
             code: '',
             name: '合计',
             reward: sum,
             estimateReward: +estimatedSum.toFixed(2)
         });
-        funds.sum = sum;
-        funds.estimatedSum = estimatedSum;
-        console.table(funds, ['name', 'reward', 'totalRewardRate', 'increaseRate', 'estimatedTotalRate', 'estimateReward']);
+        stats.sum = sum;
+        stats.estimatedSum = estimatedSum;
+        console.clear();
+        if (console.table) {
+            console.table(stats, ['name', 'totalRewardRate', 'increaseRate', 'estimatedTotalRate', 'estimateReward']);
+        }
         return +estimatedSum.toFixed(2);
     }
 
     function notify() {
         var tpl = [util.format('上证指数：{0}, {1}%\n', myStocks[0].price, (myStocks[0].change * 100).toFixed(1))];
         for (var i = 1; i < myStocks.length; i++) {
-            var reward = (myStocks[i].price - myStocks[i].buyPrice) * 100 / myStocks[i].buyPrice;
+            var reward = ((myStocks[i].price || myStocks[i].lastPrice) - myStocks[i].buyPrice) * 100 / myStocks[i].buyPrice;
             var rewardNum = (myStocks[i].buyPrice * myStocks[i].shares * reward / 100).toFixed(1);
-            var text = '{0}: {1}, {2}%, {3}\n';
-            tpl.push(util.format(text, myStocks[i].name, myStocks[i].price.toFixed(1), reward.toFixed(1), rewardNum));
+            var change = (myStocks[i].change * 100).toFixed(1);
+            var text = '{0}: {1}, {2}%, {3}, {4}%\n';
+            tpl.push(util.format(text, myStocks[i].name, myStocks[i].price.toFixed(1), change, rewardNum, reward.toFixed(1)));
         }
         tpl.push(util.format('基金收益：{0}\n', totalFundReward.toFixed(1)));
         var option = {
@@ -149,6 +153,29 @@ define(['./helper/util', './quotation'], function(util, quote) {
 
     function loadData() {
         var counter = 0;
+        var open_am = new Date(),
+            close_am = new Date(),
+            open_pm = new Date(),
+            close_pm = new Date(),
+            now = new Date();
+        open_am.setHours(9);
+        open_am.setMinutes(25);
+        close_am.setHours(11);
+        close_am.setMinutes(33);
+
+        open_pm.setHours(13);
+        open_pm.setMinutes(0);
+        close_pm.setHours(15);
+        close_pm.setMinutes(3);
+
+        //for closed hours.
+        if (now < open_am || now > close_pm || now > close_am && now < open_pm) {
+            if (!isNaN(totalFundReward)) {
+                return;
+            }
+        }
+
+
         quote.getFund(fundShares, function(data) {
             ++counter;
             totalFundReward = estimateValues(fundShares);
@@ -164,7 +191,7 @@ define(['./helper/util', './quotation'], function(util, quote) {
         });
     }
 
-    var totalFundReward = 0;
+    var totalFundReward = NaN;
 
     return {
         display: function() {

@@ -16,6 +16,13 @@ ul {
     position: relative;
 }
 
+.actions li {
+    float: left;
+    height: 28px;
+    line-height: 28px;
+    margin: 0 5px 5px 5px;
+}
+
 .main {
     height: 100%;
     width: 1px;
@@ -35,11 +42,6 @@ ul {
     list-style: none;
     width: 100%;
     margin: 20px auto;
-}
-
-.sort {
-    display: inline-block;
-    width: 200px;
 }
 
 #content {
@@ -69,7 +71,6 @@ a {
 .sort a {
     display: inline-block;
     border: 1px solid #ccc;
-    padding: 2px;
 }
 
 .category, .stock {
@@ -173,14 +174,7 @@ a {
     background-position: -240px -24px;
 }
 
-.btn-group {
-    position: relative;
-    display: inline-block;
-    width: 450px;
-}
-
 #time {
-    margin-left: 50px;
     color: blue;
 }
 
@@ -195,15 +189,13 @@ a {
     cursor: pointer;
 }
 
-.legend {
-    display: inline-block;
-    position: absolute;
-    right: 0;
+.actions li.legend {
+    float: right;
 }
 
 .legend-bar {
     display: inline-block;
-    width: 200px;
+    width: 150px;
     height: 15px;
     background: -webkit-linear-gradient(left,#0f0,#f00);
     background: -moz-linear-gradient(left,#0f0,#f00);

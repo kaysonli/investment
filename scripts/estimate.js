@@ -71,6 +71,16 @@ define(['./helper/util', './quotation'], function(util, quote) {
         name: '嘉实 300',
         buyPrice: 0.944,
         shares: 1400
+    }, {
+        code: 'sh601398',
+        name: '工商银行',
+        buyPrice: 5.166,
+        shares: 900
+    }, {
+        code: 'sh601899',
+        name: '紫金矿业',
+        buyPrice: 3.8,
+        shares: 100
     }];
 
     function saveFunds(fundShares) {
@@ -88,7 +98,7 @@ define(['./helper/util', './quotation'], function(util, quote) {
         } else {
             str = util.getCookie('fund');
         }
-        if(str) {
+        if (str) {
             return JSON.parse(str);
         }
         return null;
@@ -157,19 +167,45 @@ define(['./helper/util', './quotation'], function(util, quote) {
         for (var i = 1; i < myStocks.length; i++) {
             var reward = ((myStocks[i].price || myStocks[i].lastPrice) - myStocks[i].buyPrice) * 100 / myStocks[i].buyPrice;
             var rewardNum = (myStocks[i].buyPrice * myStocks[i].shares * reward / 100).toFixed(1);
-            var change = (myStocks[i].change * 100).toFixed(1);
+            var change = (myStocks[i].change * 100).toFixed(2);
             var text = '{0}: {1}, {2}%, {3}, {4}%\n';
-            tpl.push(util.format(text, myStocks[i].name, myStocks[i].price.toFixed(1), change, rewardNum, reward.toFixed(1)));
+            tpl.push(util.format(text, myStocks[i].name, myStocks[i].price.toFixed(2), change, rewardNum, reward.toFixed(2)));
         }
         tpl.push(util.format('基金收益：{0}\n', totalFundReward.toFixed(1)));
-        var option = {
-            title: myStocks[0].time,
-            tag: 'quote',
-            body: tpl.join(''),
-            icon: 'http://t11.baidu.com/it/u=3970997941,3640969545&fm=58',
-            onclick: loadData
-        };
-        util.notify(option);
+        var capacity = 5,
+            pos = 0;
+        var deferredTimer = -1;
+        while (true) {
+            var start = pos,
+                end = pos + capacity;
+            if (end > tpl.length) {
+                end = tpl.length;
+            }
+            var segment = tpl.slice(start, end);
+            var option = {
+                title: myStocks[0].time,
+                tag: 'quote',
+                body: segment.join(''),
+                icon: 'http://t11.baidu.com/it/u=3970997941,3640969545&fm=58',
+                onclick: function() {
+                    loadData();
+                    clearTimeout(deferredTimer);
+                }
+            };
+            if (start === 0) {
+                util.notify(option);
+            } else {
+                deferredTimer = setTimeout(function() {
+                    util.notify(option);
+                }, 3000);
+            }
+
+            if (end === tpl.length) {
+                break;
+            }
+            pos += capacity;
+        }
+
     }
 
     function loadData() {

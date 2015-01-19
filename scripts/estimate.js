@@ -1,55 +1,55 @@
 define(['./helper/util', './quotation'], function(util, quote) {
     var fundShares = [{
         "code": "020010",
-        "totalRewardRate": "16.82%",
+        "totalRewardRate": "21.17%",
         "shares": 1475.92
     }, {
         "code": "217023",
-        "totalRewardRate": "16.22%",
+        "totalRewardRate": "17.89%",
         "shares": 2084.31
     }, {
         "code": "213006",
-        "totalRewardRate": "15.67%",
+        "totalRewardRate": "16.74%",
         "shares": 1501.68
     }, {
         "code": "519977",
-        "totalRewardRate": "14.27%",
+        "totalRewardRate": "15.93%",
         "shares": 1094.75
     }, {
         "code": "161211",
-        "totalRewardRate": "10.09%",
+        "totalRewardRate": "14.47%",
         "shares": 4731.24
     }, {
         "code": "519983",
-        "totalRewardRate": "7.03%",
+        "totalRewardRate": "9.41%",
         "shares": 2460.49
     }, {
-        "code": "163113",
-        "totalRewardRate": "5.73%",
-        "shares": 4451.57
-    }, {
-        "code": "000193",
-        "totalRewardRate": "5.56%",
-        "shares": 1984.13
-    }, {
         "code": "377240",
-        "totalRewardRate": "-0.57%",
+        "totalRewardRate": "6.89%",
         "shares": 1223.05
     }, {
+        "code": "163113",
+        "totalRewardRate": "6.12%",
+        "shares": 4451.57
+    }, {
+        "code": "370027",
+        "totalRewardRate": "3.00%",
+        "shares": 856.19
+    }, {
         "code": "000051",
-        "totalRewardRate": "-1.21%",
+        "totalRewardRate": "2.16%",
         "shares": 5628.89
     }, {
         "code": "233009",
-        "totalRewardRate": "-1.89%",
+        "totalRewardRate": "-0.13%",
         "shares": 2066.6
     }, {
-        "code": "370027",
-        "totalRewardRate": "-3.16%",
-        "shares": 856.19
+        "code": "000193",
+        "totalRewardRate": "0.00%",
+        "shares": 1984.13
     }, {
         "code": "519087",
-        "totalRewardRate": "-3.11%",
+        "totalRewardRate": "-0.23%",
         "shares": 4478.45
     }];
 

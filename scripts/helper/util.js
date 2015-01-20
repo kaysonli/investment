@@ -6,8 +6,19 @@ define(function() {
         }
         var formatStr = arguments[0];
         var args = [].slice.call(arguments, 1);
+        var param = args[0],
+            start = 0;
+        if (typeof param === 'object') {
+            for (var p in param) {
+                if (param.hasOwnProperty(p)) {
+                    var reg = new RegExp('\{' + p + '\}', 'g');
+                    formatStr = formatStr.replace(reg, param[p]);
+                }
+            }
+            ++start;
+        }
         for (var i = 0; i < args.length; i++) {
-            formatStr = formatStr.replace('{' + i + '}', args[i]);
+            formatStr = formatStr.replace('{' + i + '}', args[i + start]);
         }
         return formatStr;
     }
@@ -127,10 +138,10 @@ define(function() {
                 var parts = cookies[i].split('='),
                     key = parts[0],
                     value = parts[1];
-                if(parts.length > 2) {
+                if (parts.length > 2) {
                     value = parts.slice(1).join('=');
                 }
-                if(key === name) {
+                if (key === name) {
                     return value;
                 }
             }

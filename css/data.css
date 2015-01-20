@@ -1,0 +1,46 @@
+.row {
+    overflow: hidden;
+    height: 25px;
+    line-height: 25px;
+}
+.row.last {
+    overflow: visible;
+}
+.row:after {
+    clear: both;
+}
+li.grid {
+    list-style: none;
+    float: left;
+    width: 16%;
+    height: 100%;
+    text-align: center;
+}
+li.grid input {
+    width: 100px;
+}
+.action {
+    width: 80px;
+}
+.action.add {
+    position: relative;
+    top: -30px;
+}
+.center {
+    margin: 5px auto;
+    text-align: center;
+}
+
+.panel {
+    position: absolute;
+    width: 640px;
+    height: 480px;
+    overflow: auto;
+    left: 50%;
+    top: 50%;
+    margin-left: -320px;
+    margin-top: -240px;
+    z-index: 100;
+    background-color: #ccc;
+    border: 1px solid #000;
+}

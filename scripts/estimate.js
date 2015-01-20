@@ -1,57 +1,58 @@
 define(['./helper/util', './quotation'], function(util, quote) {
     var fundShares = [{
         "code": "020010",
-        "totalRewardRate": "21.17%",
+        "totalRewardRate": "19.11%",
         "shares": 1475.92
     }, {
         "code": "217023",
-        "totalRewardRate": "17.89%",
+        "totalRewardRate": "16.53%",
         "shares": 2084.31
     }, {
         "code": "213006",
-        "totalRewardRate": "16.74%",
+        "totalRewardRate": "11.56%",
         "shares": 1501.68
     }, {
         "code": "519977",
-        "totalRewardRate": "15.93%",
-        "shares": 1094.75
-    }, {
-        "code": "161211",
-        "totalRewardRate": "14.47%",
-        "shares": 4731.24
-    }, {
-        "code": "519983",
-        "totalRewardRate": "9.41%",
-        "shares": 2460.49
+        "totalRewardRate": "9.31%",
+        "shares": 2779.46
     }, {
         "code": "377240",
-        "totalRewardRate": "6.89%",
+        "totalRewardRate": "5.43%",
         "shares": 1223.05
     }, {
-        "code": "163113",
-        "totalRewardRate": "6.12%",
-        "shares": 4451.57
+        "code": "519983",
+        "totalRewardRate": "3.67%",
+        "shares": 2460.49
+    }, {
+        "code": "161211",
+        "totalRewardRate": "4.17%",
+        "shares": 4731.24
     }, {
         "code": "370027",
-        "totalRewardRate": "3.00%",
+        "totalRewardRate": "1.89%",
         "shares": 856.19
     }, {
-        "code": "000051",
-        "totalRewardRate": "2.16%",
-        "shares": 5628.89
-    }, {
-        "code": "233009",
-        "totalRewardRate": "-0.13%",
-        "shares": 2066.6
-    }, {
         "code": "000193",
-        "totalRewardRate": "0.00%",
+        "totalRewardRate": "1.79%",
         "shares": 1984.13
     }, {
+        "code": "163113",
+        "totalRewardRate": "-0.30%",
+        "shares": 6481.04
+    }, {
+        "code": "233009",
+        "totalRewardRate": "-1.17%",
+        "shares": 2066.6
+    }, {
+        "code": "000051",
+        "totalRewardRate": "-5.25%",
+        "shares": 5628.89
+    }, {
         "code": "519087",
-        "totalRewardRate": "-0.23%",
+        "totalRewardRate": "-13.68%",
         "shares": 4478.45
     }];
+
 
     var myStocks = [{
         code: 'sh000001',
@@ -101,7 +102,7 @@ define(['./helper/util', './quotation'], function(util, quote) {
         if (str) {
             return JSON.parse(str);
         }
-        return null;
+        return fundShares;
     }
 
     function getFundShares() {
@@ -157,7 +158,7 @@ define(['./helper/util', './quotation'], function(util, quote) {
         stats.estimatedSum = estimatedSum;
         console.clear();
         if (console.table) {
-            console.table(stats, ['name', 'totalRewardRate', 'increaseRate', 'estimatedTotalRate', 'estimateReward']);
+            console.table(stats, ['code', 'name', 'totalRewardRate', 'increaseRate', 'estimatedTotalRate', 'estimateReward']);
         }
         return +estimatedSum.toFixed(2);
     }
@@ -253,6 +254,7 @@ define(['./helper/util', './quotation'], function(util, quote) {
     return {
         display: function() {
             loadData();
-        }
+        },
+        getFunds: getFunds
     };
 });

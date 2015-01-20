@@ -1,24 +1,35 @@
 define(function() {
 
+    String.prototype.trim = function() {
+        var reg = /^\s+|\s+$/g;
+        if (arguments.length > 0 && typeof arguments[0] === 'string') {
+            var ch = arguments[0],
+                special = '.$^{}[](|)*+?\\',
+                escaped = special.indexOf(ch) > -1 ? ('\\' + ch) : ch;
+            reg = new RegExp(escaped + '+$', 'g');
+            return this.replace(reg, '');
+        }
+        return this.replace(reg, "");
+    };
+
     function format() {
         if (arguments.length === 0) {
             return '';
         }
         var formatStr = arguments[0];
         var args = [].slice.call(arguments, 1);
-        var param = args[0],
-            start = 0;
-        if (typeof param === 'object') {
+        var param = args[0];
+        if (param && typeof param === 'object') {
             for (var p in param) {
                 if (param.hasOwnProperty(p)) {
-                    var reg = new RegExp('\{' + p + '\}', 'g');
+                    var reg = new RegExp('\\{' + p + '\\}', 'g');
                     formatStr = formatStr.replace(reg, param[p]);
                 }
             }
-            ++start;
+            args = args.slice(1);
         }
         for (var i = 0; i < args.length; i++) {
-            formatStr = formatStr.replace('{' + i + '}', args[i + start]);
+            formatStr = formatStr.replace(new RegExp('\\{' + i + '\\}', 'g'), args[i]);
         }
         return formatStr;
     }

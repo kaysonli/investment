@@ -1,4 +1,10 @@
-require(['./fund', './stock', './helper/util', './estimate'], function(fund, stock, util, estimate) {
+require.config({
+    paths: {
+        jquery: 'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min'
+    }
+});
+
+require(['./fund', './stock', './helper/util', './estimate', './cache'], function(fund, stock, util, estimate, cache) {
     // fund.getList(function(list, openList, currencyList) {
     //     console.log(list, openList, currencyList);
     //     fund.getHistoricalValues('020001', 2014, function(values) {
@@ -26,4 +32,10 @@ require(['./fund', './stock', './helper/util', './estimate'], function(fund, sto
     setInterval(function() {
         estimate.display();
     }, 30000);
+
+    var btnSettings = document.getElementById('btnSettings');
+    btnSettings.addEventListener('click', function() {
+        var funds = estimate.getFunds();
+        cache.openPanel(funds);
+    });
 });

@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/lzkwin/investment/issues"
   },
-  "homepage": "https://github.com/lzkwin/investment"
+  "homepage": "https://github.com/lzkwin/investment",
+  "devDependencies": {
+    "requirejs": "^2.1.15"
+  }
 }

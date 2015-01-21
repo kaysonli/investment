@@ -1,10 +1,17 @@
 require.config({
     paths: {
-        jquery: 'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min'
+        jquery: 'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min',
+        fundList: 'http://hqqd.fund123.cn/funddataforsearch'
+    },
+    shim: {
+        'fundList': {
+            exports: 'fundArray'
+        }
     }
 });
 
-require(['./fund', './stock', './helper/util', './estimate', './cache'], function(fund, stock, util, estimate, cache) {
+require(['./fund', './stock', './helper/util', './estimate', './cache', 'fundList'], 
+    function(fund, stock, util, estimate, cache, fundList) {
     // fund.getList(function(list, openList, currencyList) {
     //     console.log(list, openList, currencyList);
     //     fund.getHistoricalValues('020001', 2014, function(values) {

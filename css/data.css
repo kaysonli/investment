@@ -9,23 +9,74 @@
 .row:after {
     clear: both;
 }
+
 li.grid {
     list-style: none;
     float: left;
-    width: 16%;
     height: 100%;
     text-align: center;
 }
+
+.span1 {
+    width: 8%;
+}
+
+.span2 {
+    width: 16%;
+}
+
+.span3 {
+    width: 24%;
+}
+
+.span4 {
+    width: 32%;
+}
+
+.span5 {
+    width: 40%;
+}
+
+.span6 {
+    width: 50%;
+}
+
+.span7 {
+    width: 58%;
+}
+
+.span8 {
+    width: 66%;
+}
+
+.span9 {
+    width: 72%;
+}
+
+.span10 {
+    width: 80%;
+}
+
+.span11 {
+    width: 90%;
+}
+
+.span12 {
+    width: 100%;
+}
+
+li.grid:last-child {
+    text-align: left;
+}
+
+li.grid:first-child {
+    text-align: right;
+}
+
 li.grid input {
-    width: 100px;
+    width: 65px;
 }
-.action {
-    width: 80px;
-}
-.action.add {
-    position: relative;
-    top: -30px;
-}
+
 .center {
     margin: 5px auto;
     text-align: center;
@@ -43,4 +94,26 @@ li.grid input {
     z-index: 100;
     background-color: #ccc;
     border: 1px solid #000;
+}
+
+.action {
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    margin-top: 1px;
+    display: inline-block;
+    background-image: url(../images/glyphicons-halflings.png);
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+.remove {
+    background-position: -432px -94px;
+}
+
+.add {
+    position: relative;
+    top: -27px;
+    left: -100px;
+    background-position: -407px -96px;
 }

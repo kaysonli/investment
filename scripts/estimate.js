@@ -1,57 +1,58 @@
 define(['./helper/util', './quotation'], function(util, quote) {
     var fundShares = [{
         "code": "020010",
-        "totalRewardRate": "19.11%",
+        "totalRewardRate": "22.21%",
         "shares": 1475.92
     }, {
+        "code": "213006",
+        "totalRewardRate": "18.23%",
+        "shares": 1559.63
+    }, {
         "code": "217023",
-        "totalRewardRate": "16.53%",
+        "totalRewardRate": "17.26%",
         "shares": 2084.31
     }, {
-        "code": "213006",
-        "totalRewardRate": "11.56%",
-        "shares": 1501.68
-    }, {
-        "code": "519977",
-        "totalRewardRate": "9.31%",
-        "shares": 2779.46
-    }, {
         "code": "377240",
-        "totalRewardRate": "5.43%",
+        "totalRewardRate": "10.50%",
         "shares": 1223.05
     }, {
+        "code": "519977",
+        "totalRewardRate": "9.80%",
+        "shares": 2779.46
+    }, {
+        "code": "370027",
+        "totalRewardRate": "6.94%",
+        "shares": 856.19
+    }, {
         "code": "519983",
-        "totalRewardRate": "3.67%",
+        "totalRewardRate": "5.97%",
         "shares": 2460.49
     }, {
         "code": "161211",
-        "totalRewardRate": "4.17%",
+        "totalRewardRate": "2.58%",
         "shares": 4731.24
-    }, {
-        "code": "370027",
-        "totalRewardRate": "1.89%",
-        "shares": 856.19
     }, {
         "code": "000193",
         "totalRewardRate": "1.79%",
         "shares": 1984.13
     }, {
-        "code": "163113",
-        "totalRewardRate": "-0.30%",
-        "shares": 6481.04
-    }, {
         "code": "233009",
-        "totalRewardRate": "-1.17%",
+        "totalRewardRate": "1.05%",
         "shares": 2066.6
     }, {
+        "code": "519087",
+        "totalRewardRate": "-3.53%",
+        "shares": 4887.4
+    }, {
         "code": "000051",
-        "totalRewardRate": "-5.25%",
+        "totalRewardRate": "-4.03%",
         "shares": 5628.89
     }, {
-        "code": "519087",
-        "totalRewardRate": "-13.68%",
-        "shares": 4478.45
+        "code": "163113",
+        "totalRewardRate": "-5.32%",
+        "shares": 6481.04
     }];
+
 
 
     var myStocks = [{

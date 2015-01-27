@@ -1,6 +1,7 @@
 require.config({
     paths: {
         jquery: 'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min',
+        ko: './lib/knockout',
         fundList: 'http://hqqd.fund123.cn/funddataforsearch'
     },
     shim: {
@@ -10,8 +11,8 @@ require.config({
     }
 });
 
-require(['./fund', './stock', './helper/util', './estimate', './cache', 'fundList'], 
-    function(fund, stock, util, estimate, cache, fundList) {
+require(['./fund', './stock', './helper/util', './estimate', './cache', './ko'],
+    function(fund, stock, util, estimate, cache, ko) {
     // fund.getList(function(list, openList, currencyList) {
     //     console.log(list, openList, currencyList);
     //     fund.getHistoricalValues('020001', 2014, function(values) {

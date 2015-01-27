@@ -116,7 +116,7 @@ define(function() {
             var notification = new Notification(args.title || '', {
                 icon: args.icon,
                 tag: args.tag,
-                body: args.body,
+                body: args.body
             });
 
 
@@ -126,6 +126,13 @@ define(function() {
                     args.onclick();
                 }
             };
+            
+            notification.onclose = function() {
+                if(args.onclose) {
+                    args.onclose();
+                }
+            };
+
             if (args.duration) {
                 setTimeout(function() {
                     notification.close();

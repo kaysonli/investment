@@ -1,0 +1,105 @@
+define(function() {
+    var fundShares = [{
+        "code": "020010",
+        "totalRewardRate": "25.60%",
+        "shares": 1475.92
+    }, {
+        "code": "213006",
+        "totalRewardRate": "20.94%",
+        "shares": 1559.63
+    }, {
+        "code": "217023",
+        "totalRewardRate": "17.99%",
+        "shares": 2084.31
+    }, {
+        "code": "377240",
+        "totalRewardRate": "14.17%",
+        "shares": 1223.05
+    }, {
+        "code": "519983",
+        "totalRewardRate": "11.13%",
+        "shares": 2460.49
+    }, {
+        "code": "370027",
+        "totalRewardRate": "10.19%",
+        "shares": 856.19
+    }, {
+        "code": "519977",
+        "totalRewardRate": "10.18%",
+        "shares": 2779.46
+    }, {
+        "code": "161211",
+        "totalRewardRate": "9.91%",
+        "shares": 4731.24
+    }, {
+        "code": "233009",
+        "totalRewardRate": "3.95%",
+        "shares": 2066.6
+    }, {
+        "code": "000193",
+        "totalRewardRate": "1.98%",
+        "shares": 1984.13
+    }, {
+        "code": "000051",
+        "totalRewardRate": "1.60%",
+        "shares": 5628.89
+    }, {
+        "code": "519087",
+        "totalRewardRate": "1.14%",
+        "shares": 4887.4
+    }, {
+        "code": "163113",
+        "totalRewardRate": "0.33%",
+        "shares": 6481.04
+    }, {
+        "code": "151002",
+        "totalRewardRate": "-0.35%",
+        "shares": 3048.07
+    }, {
+        "code": "162211",
+        "totalRewardRate": "-0.60%",
+        "shares": 2503.87
+    }, {
+        "code": "000696",
+        "totalRewardRate": "-0.60%",
+        "shares": 2672.14
+    }, {
+        "code": "000083",
+        "totalRewardRate": "-0.60%",
+        "shares": 1844.22
+    }];
+
+    var myStocks = [{
+        code: 'sh000001',
+        name: '上证指数'
+    }, {
+        code: 'sh601218',
+        name: '吉鑫科技',
+        buyPrice: 7.65,
+        shares: 300
+    }, {
+        code: 'sz000930',
+        name: '中粮生化',
+        buyPrice: 7.82,
+        shares: 400
+    }, {
+        code: 'sz160706',
+        name: '嘉实 300',
+        buyPrice: 0.944,
+        shares: 1400
+    }, {
+        code: 'sh601398',
+        name: '工商银行',
+        buyPrice: 5.166,
+        shares: 900
+    }, {
+        code: 'sh601899',
+        name: '紫金矿业',
+        buyPrice: 3.8,
+        shares: 100
+    }];
+    return {
+        fund: fundShares,
+        stock: myStocks
+    };
+});

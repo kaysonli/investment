@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+    <title>Experimental investment tools</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/data.css">
+    <script data-main="scripts/index" src="scripts/require.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <ul id="nav" class="clearfix folders" data-bind="foreach: folders">
+            <li data-bind="text: name, 
+                           click: $root.goToFolder,
+                           css: { selected: id == $root.chosenFolderId() }" class="nav-item"></li>
+        </ul>
+        <ul class="actions clearfix">
+            <li id="sort" class="sort">
+                <a class="amount desc" sort="amount" href="#" id="btnAmount">成交量
+                </a>
+                <a class="change desc" sort="change" href="#" id="btnChange">涨跌幅
+                </a>
+            </li>
+            <li class="btn-group">
+                <button class="btn" id="btnUp">
+                    <i class="icon-back"></i> 返回上级
+                </button>
+                <button class="btn" id="btnRefresh" data-bind="click: $root.refresh">
+                    <i class="icon-refresh"></i> 刷新
+                </button>
+            </li>
+            <li>
+                <input type="checkbox" id="auto" /><label for="auto">自动刷新</label>
+                <select id="freq">
+                    <option value="5">5s</option>
+                    <option value="10">10s</option>
+                    <option value="15">15s</option>
+                    <option value="30">30s</option>
+                </select>
+            </li>
+            <li><span id="time"></span></li>
+            <li><button class="btn" id="btnSettings">
+                    <i></i> 桌面通知
+                </button></li>
+            <li class="legend">
+                <label>-10%</label><div class="legend-bar"></div><label>10%</label>
+            </li>
+        </ul>
+        <div id="content"></div>
+    </div>
+    <div id="mask">
+        <div class="loading-box"></div>
+    </div>
+    <div id="detail">
+
+    </div>
+</body>
+
+</html>

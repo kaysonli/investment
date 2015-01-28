@@ -428,6 +428,8 @@ define(['./helper/util', './data/stock'], function(util, ds) {
             stopTimer();
             startTimer(interval);
         },
-        getStockInfo: getStockInfo
+        getStockInfo: getStockInfo,
+
+        loadData: loadData
     };
 });

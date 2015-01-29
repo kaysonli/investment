@@ -2,6 +2,7 @@ require.config({
     paths: {
         jquery: ['http://cdn.staticfile.org/jquery/1.9.1/jquery.min', './lib/jquery.min'],
         ko: './lib/knockout',
+        // ko: './lib/knockout-3.2.0.debug',
         sammy: './lib/sammy',
         fundList: 'http://hqqd.fund123.cn/funddataforsearch'
     },

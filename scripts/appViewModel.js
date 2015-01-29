@@ -1,14 +1,15 @@
 define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function(ko, Sammy, util, stock, engine) {
-    var init = true;
     return function appViewModel() {
         var folders = [],
             ds = stock.dataSource,
-            self = this;
+            self = this,
+            loaded = [];
         for (var i = 0; i < ds.length; i++) {
             folders.push({
                 name: ds[i].category,
                 id: i
             });
+            loaded[i] = false;
         }
         self.folders = folders;
         self.chosenFolderId = ko.observable();
@@ -42,7 +43,7 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
 
         self.sortAmount = function() {
             var order = self.amountOrder;
-            if(order() === 'desc') {
+            if (order() === 'desc') {
                 order('asc');
             } else {
                 order('desc');
@@ -53,7 +54,7 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
 
         self.sortChange = function() {
             var order = self.changeOrder;
-            if(order() === 'desc') {
+            if (order() === 'desc') {
                 order('asc');
             } else {
                 order('desc');
@@ -64,16 +65,25 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
 
         self.showDetail = function(data, e) {
             self.tooltipData({
-                change: data.change,
-                amount: data.amount
+                name: data.name,
+                price: data.price,
+                change: (+data.change * 100).toFixed(1),
+                amount: (+data.amount / 10000).toFixed(2),
+                x: e.pageX + 50,
+                y: e.pageY - 50
             });
             self.showTooltip(true);
         };
 
+        self.hideDetail = function(data, e) {
+            self.showTooltip(false);
+        };
+
         function initData() {
-            if (init) {
+            var reload = !loaded[self.chosenFolderId()];
+            if (reload) {
                 self.refresh();
-                init = false;
+                loaded[self.chosenFolderId()] = true;
             } else {
                 updateSource();
             }

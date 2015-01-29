@@ -53,13 +53,13 @@
         </ul>
         <ul class="folder-content" data-bind="foreach: chosenFolderData().items">
             <li class="category" data-bind="css: { down: change <= 0, up: change > 0}, click: $root.goToCategory">
-                <div class="main" data-bind="quote: {amount: amount, change: change, maxAmount: $root.chosenFolderData().maxAmount}, event: { mouseover: $root.showDetail }"></div>
+                <div class="main" data-bind="quote: {amount: amount, change: change, maxAmount: $root.chosenFolderData().maxAmount}, event: { mouseover: $root.showDetail, mouseout: $root.hideDetail }"></div>
                 <div class="title" data-bind="text: name"></div>
             </li>
         </ul>
         <ul class="category-content" data-bind="foreach: chosenCategoryData().items">
             <li class="category" data-bind="css: { down: change <= 0, up: change > 0}">
-                <div class="main" data-bind="quote: {amount: amount, change: change, maxAmount: $root.chosenCategoryData().maxAmount}, mouseover: $root.showDetail"></div>
+                <div class="main" data-bind="quote: {amount: amount, change: change, maxAmount: $root.chosenCategoryData().maxAmount}, event: { mouseover: $root.showDetail, mouseout: $root.hideDetail }"></div>
                 <div class="title" data-bind="text: name"></div>
             </li>
         </ul>
@@ -67,16 +67,18 @@
     <div id="mask">
         <div class="loading-box"></div>
     </div>
-    <div id="detail" style="left: 530px; top: 113px;" data-bind="css: { down: $root.tooltipData().change <= 0, up: $root.tooltipData().change > 0 }, visible: $root.showTooltip">
-        <h3>计算机</h3>
+    <div id="detail" style="display: none;" data-bind="css: { down: tooltipData().change <= 0, up: tooltipData().change > 0 }, visible: showTooltip, style: {left: tooltipData().x + 'px', top: tooltipData().y + 'px' },
+        with: tooltipData">
+        <h3 data-bind="text: name"></h3>
         <ul>
-            <li class="point"><span class="column">涨跌幅：</span><span class="value price" data-bind="text: $root.tooltipData().change + '%'"></span>
+            <li class="point" data-bind="visible: price != null"><span class="column">当前价：</span><span class="value price" data-bind="text: price"></span>
             </li>
-            <li class="point"><span class="column">成交量：</span><span class="value" data-bind="text: $root.tooltipData().amount + '万'"></span>
+            <li class="point"><span class="column">涨跌幅：</span><span class="value price" data-bind="text: change + '%'"></span>
+            </li>
+            <li class="point"><span class="column">成交量：</span><span class="value" data-bind="text: amount + '万'"></span>
             </li>
         </ul>
     </div>
-
 
 </body>
 

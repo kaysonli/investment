@@ -364,7 +364,7 @@ define(['./helper/util', './data/stock'], function(util, ds) {
                     if (tasks === data.length) {
                         if (callback) {
                             updateSource(gSortName, gSortOrder);
-                            callback();
+                            callback(source);
                         }
                     }
                 });
@@ -430,6 +430,8 @@ define(['./helper/util', './data/stock'], function(util, ds) {
         },
         getStockInfo: getStockInfo,
 
-        loadData: loadData
+        loadData: loadData,
+
+        getColor: getColor
     };
 });

@@ -11,7 +11,10 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
         }
         self.folders = folders;
         self.chosenFolderId = ko.observable();
-        self.chosenFolderData = ko.observable();
+        self.chosenFolderData = ko.observable({
+            items: [],
+            maxAmount: 0
+        });
         self.chosenCategoryData = ko.observable();
 
         self.goToFolder = function(folder) {
@@ -25,10 +28,26 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
 
         self.refresh = function() {
             util.setLoading(true);
-            engine.loadData(self.chosenFolderId(), function() {
+            engine.loadData(self.chosenFolderId(), function(dataSource) {
                 util.setLoading(false);
+                var index = self.chosenFolderId();
+                var items = dataSource[index].data,
+                    maxAmount = -1;
+                for (var i = 0; i < items.length; i++) {
+                    if(items[i].amount > maxAmount) {
+                        maxAmount = items[i].amount;
+                    }
+                }
+                self.chosenFolderData({
+                    items: dataSource[index].data,
+                    maxAmount: maxAmount 
+                });
             });
         };
+
+        function updateSource() {
+            
+        }
 
         Sammy(function() {
             this.get('#:folder', function() {

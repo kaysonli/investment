@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>Experimental investment tools</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/data.css">
@@ -49,7 +49,13 @@
                 <label>-10%</label><div class="legend-bar"></div><label>10%</label>
             </li>
         </ul>
-        <div id="content"></div>
+        <ul class="folder-content" data-bind="foreach: chosenFolderData().items">
+            <li class="category" data-bind="css: { down: change < 0}">
+                <div class="main" data-bind="quote: {amount: amount, change: change, maxAmount: $root.chosenFolderData().maxAmount}"></div>
+                <div class="title" data-bind="text: name"></div>
+            </li>
+        </ul>
+        <ul class="category-content" data-bind="foreach: chosenCategoryData"></ul>
     </div>
     <div id="mask">
         <div class="loading-box"></div>

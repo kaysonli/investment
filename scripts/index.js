@@ -12,6 +12,18 @@ require.config({
     }
 });
 
-require(['./ko',  './appViewModel', './domReady!'], function(ko, appViewModel, doc) {
+require(['./ko', './appViewModel', './domReady!', './stock'], function(ko, appViewModel, doc, engine) {
+    ko.bindingHandlers.quote = {
+        init: function(element, valueAccessor) {
+            // var observable = valueAccessor();
+            // $(element).width(observable);
+        },
+        update: function(element, valueAccessor) {
+            var observable = valueAccessor();
+            var width = (observable.amount / observable.maxAmount) * 80 + '%';
+            var color = engine.getColor(observable.change);
+            $(element).width(width).css('background-color', color);
+        }
+    };
     ko.applyBindings(new appViewModel());
 });

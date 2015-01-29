@@ -68,9 +68,11 @@ a {
     color: #000;
 }
 
-.sort a {
+.sort a,
+.sort span {
     display: inline-block;
     border: 1px solid #ccc;
+    cursor: pointer;
 }
 
 .category, .stock {
@@ -117,7 +119,7 @@ a {
 #detail {
     background-color: #333;
     color: #fff;
-    display: none;
+    /*display: none;*/
     width: 180px;
     height: 80px;
     position: absolute;
@@ -135,7 +137,7 @@ a {
     color: #f00;
 }
 
-.up .price:after, a.asc:after {
+.up .price:after, .asc:after {
     content: '↑'
 }
 
@@ -143,7 +145,7 @@ a {
     color: #0f0;
 }
 
-.down .price:after, a.desc:after {
+.down .price:after, .desc:after {
     content: '↓'
 }
 

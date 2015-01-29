@@ -1,6 +1,6 @@
 require.config({
     paths: {
-        jquery: 'http://cdn.staticfile.org/jquery/1.9.1/jquery.min',
+        jquery: ['http://cdn.staticfile.org/jquery/1.9.1/jquery.min', './lib/jquery.min'],
         ko: './lib/knockout',
         sammy: './lib/sammy',
         fundList: 'http://hqqd.fund123.cn/funddataforsearch'

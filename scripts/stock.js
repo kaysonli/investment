@@ -432,6 +432,8 @@ define(['./helper/util', './data/stock'], function(util, ds) {
 
         loadData: loadData,
 
-        getColor: getColor
+        getColor: getColor,
+
+        sortData: updateSource
     };
 });

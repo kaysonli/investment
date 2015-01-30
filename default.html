@@ -70,12 +70,10 @@
     <div id="detail" style="display: none;" data-bind="css: { down: tooltipData().change <= 0, up: tooltipData().change > 0 }, visible: showTooltip, style: {left: tooltipData().x + 'px', top: tooltipData().y + 'px' },
         with: tooltipData">
         <h3 data-bind="text: name"></h3>
-        <ul>
-            <li class="point" data-bind="visible: price != null"><span class="column">当前价：</span><span class="value price" data-bind="text: price"></span>
-            </li>
-            <li class="point"><span class="column">涨跌幅：</span><span class="value price" data-bind="text: change + '%'"></span>
-            </li>
-            <li class="point"><span class="column">成交量：</span><span class="value" data-bind="text: amount + '万'"></span>
+        <ul data-bind="foreach: tipItems">
+            <li class="point">
+                <span class="column" data-bind="text: key"></span>
+                <span class="value" data-bind="text: value, css: { price: showTrend }"></span>
             </li>
         </ul>
     </div>

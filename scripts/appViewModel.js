@@ -18,7 +18,9 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
         self.chosenCategoryData = ko.observable({});
         self.amountOrder = ko.observable('desc');
         self.changeOrder = ko.observable('desc');
-        self.tooltipData = ko.observable({});
+        self.tooltipData = ko.observable({
+            tipItems: []
+        });
         self.showTooltip = ko.observable(false);
 
         self.goToFolder = function(folder) {
@@ -64,11 +66,29 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
         };
 
         self.showDetail = function(data, e) {
+            var price = data.price,
+                change = (+data.change * 100).toFixed(1),
+                amount = (+data.amount / 10000).toFixed(2);
+            var items = [{
+                key: '涨跌幅：',
+                value: change + '%',
+                showTrend: true
+            }, {
+                key: '成交额：',
+                value: amount + '万',
+                showTrend: false
+            }];
+            if(data.price != null) {
+                items.unshift({
+                    key: '当前价：',
+                    value: price,
+                    showTrend: true
+                });
+            }
             self.tooltipData({
                 name: data.name,
-                price: data.price,
-                change: (+data.change * 100).toFixed(1),
-                amount: (+data.amount / 10000).toFixed(2),
+                tipItems: items,
+                change: change,
                 x: e.pageX + 50,
                 y: e.pageY - 50
             });

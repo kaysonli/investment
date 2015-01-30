@@ -35,11 +35,11 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
             location.hash = self.chosenFolderId();
         };
 
-        self.refresh = function() {
+        self.refresh = function(sortName, sortOrder) {
             util.setLoading(true);
             engine.loadData(self.chosenFolderId(), function(dataSource) {
                 util.setLoading(false);
-                updateSource();
+                updateSource(sortName, sortOrder);
             });
         };
 
@@ -50,8 +50,7 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
             } else {
                 order('desc');
             }
-            engine.sortData('amount', order());
-            initData();
+            initData('amount', order());
         };
 
         self.sortChange = function() {
@@ -61,8 +60,7 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
             } else {
                 order('desc');
             }
-            engine.sortData('change', order());
-            initData();
+            initData('change', order());
         };
 
         self.showDetail = function(data, e) {
@@ -78,7 +76,7 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
                 value: amount + '万',
                 showTrend: false
             }];
-            if(data.price != null) {
+            if (data.price != null) {
                 items.unshift({
                     key: '当前价：',
                     value: price,
@@ -99,17 +97,17 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
             self.showTooltip(false);
         };
 
-        function initData() {
+        function initData(sortName, sortOrder) {
             var reload = !loaded[self.chosenFolderId()];
             if (reload) {
-                self.refresh();
+                self.refresh(sortName, sortOrder);
                 loaded[self.chosenFolderId()] = true;
             } else {
-                updateSource();
+                updateSource(sortName, sortOrder);
             }
         }
 
-        function updateFolder(folderId) {
+        function updateFolder(folderId, sortName, sortOrder) {
             var items = stock.dataSource[folderId].data,
                 maxAmount = -Infinity;
             for (var i = 0; i < items.length; i++) {
@@ -119,13 +117,19 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
                 items[i].change = items[i].change || 0;
                 items[i].id = i;
             }
+            sortName = sortName || 'amount';
+            sortOrder = sortOrder || 'desc';
+            items.sort(function(a, b) {
+                var ret = a[sortName] - b[sortName];
+                return sortOrder == 'asc' ? ret : -ret;
+            });
             self.chosenFolderData({
-                items: stock.dataSource[folderId].data,
+                items: items,
                 maxAmount: maxAmount
             });
         }
 
-        function updateCategory(folderId, categoryId) {
+        function updateCategory(folderId, categoryId, sortName, sortOrder) {
             var items = stock.dataSource[folderId].data[categoryId].stocks,
                 maxAmount = -Infinity,
                 bindItems = [];
@@ -138,20 +142,26 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
                 info.id = i;
                 bindItems.push(info);
             }
+            sortName = sortName || 'amount';
+            sortOrder = sortOrder || 'desc';
+            bindItems.sort(function(a, b) {
+                var ret = a[sortName] - b[sortName];
+                return sortOrder == 'asc' ? ret : -ret;
+            });
             self.chosenCategoryData({
                 items: bindItems,
                 maxAmount: maxAmount
             });
         }
 
-        function updateSource() {
+        function updateSource(sortName, sortOrder) {
             var folderId = self.chosenFolderId(),
                 categoryId = self.chosenCategoryId();
             if (categoryId != null) {
-                updateCategory(folderId, categoryId);
+                updateCategory(folderId, categoryId, sortName, sortOrder);
                 self.chosenFolderData({});
             } else {
-                updateFolder(folderId);
+                updateFolder(folderId, sortName, sortOrder);
                 self.chosenCategoryData({});
             }
         }

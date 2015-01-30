@@ -68,6 +68,10 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
                 change = (+data.change * 100).toFixed(1),
                 amount = (+data.amount / 10000).toFixed(2);
             var items = [{
+                key: '当前价：',
+                value: price,
+                showTrend: true
+            }, {
                 key: '涨跌幅：',
                 value: change + '%',
                 showTrend: true
@@ -76,13 +80,6 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
                 value: amount + '万',
                 showTrend: false
             }];
-            if (data.price != null) {
-                items.unshift({
-                    key: '当前价：',
-                    value: price,
-                    showTrend: true
-                });
-            }
             self.tooltipData({
                 name: data.name,
                 tipItems: items,

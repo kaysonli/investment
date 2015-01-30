@@ -71,7 +71,7 @@
         with: tooltipData">
         <h3 data-bind="text: name"></h3>
         <ul data-bind="foreach: tipItems">
-            <li class="point">
+            <li class="point" data-bind="if: value">
                 <span class="column" data-bind="text: key"></span>
                 <span class="value" data-bind="text: value, css: { price: showTrend }"></span>
             </li>

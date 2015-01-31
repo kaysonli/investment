@@ -19,11 +19,34 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
         self.chosenCategoryData = ko.observable();
         self.amountOrder = ko.observable('desc');
         self.changeOrder = ko.observable('desc');
-        self.sortingName = ko.observable('amount');
-        self.tooltipData = ko.observable({
-            tipItems: []
-        });
+        self.sortingName = 'amount';
+        self.tooltipData = ko.observable();
         self.showTooltip = ko.observable(false);
+        self.autoRefresh = false
+        self.frequency = 10;
+
+        var timer;
+
+        self.toggleAutoRefresh = function() {
+            self.autoRefresh = !self.autoRefresh;
+            if (self.autoRefresh) {
+                timer = setInterval(function() {
+                    self.refresh();
+                }, self.frequency * 1000)
+            } else {
+                clearInterval(timer);
+            }
+        };
+
+        self.setFrequency = function(vm, e) {
+            self.frequency = +e.target.value;
+            clearInterval(timer);
+            if (self.autoRefresh) {
+                timer = setInterval(function() {
+                    self.refresh();
+                }, self.frequency * 1000)
+            }
+        };
 
         self.goToFolder = function(folder) {
             location.hash = folder.id;
@@ -46,7 +69,7 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
         };
 
         self.sortAmount = function() {
-            self.sortingName('amount');
+            self.sortingName = 'amount';
             var order = self.amountOrder;
             if (order() === 'desc') {
                 order('asc');
@@ -57,7 +80,7 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
         };
 
         self.sortChange = function() {
-            self.sortingName('change');
+            self.sortingName = 'change';
             var order = self.changeOrder;
             if (order() === 'desc') {
                 order('asc');
@@ -98,13 +121,13 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
             self.showTooltip(false);
         };
 
-        function initData(sortName, sortOrder) {
+        function initData() {
             var reload = !loaded[self.chosenFolderId()];
             if (reload) {
-                self.refresh(sortName, sortOrder);
+                self.refresh();
                 loaded[self.chosenFolderId()] = true;
             } else {
-                updateSource(sortName, sortOrder);
+                updateSource();
             }
         }
 
@@ -155,9 +178,15 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
             });
         }
 
-        function updateSource(sortName, sortOrder) {
+        function updateSource() {
             var folderId = self.chosenFolderId(),
                 categoryId = self.chosenCategoryId();
+            var sortName = self.sortingName,
+                order = {
+                    amount: self.amountOrder(),
+                    change: self.changeOrder()
+                },
+                sortOrder = order[sortName];
             if (categoryId != null) {
                 updateCategory(folderId, categoryId, sortName, sortOrder);
                 self.chosenFolderData(null);
@@ -171,23 +200,13 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
             this.get('#:folder', function() {
                 self.chosenFolderId(this.params.folder);
                 self.chosenCategoryId(null);
-                var sortName = self.sortingName(),
-                    order = {
-                        amount: self.amountOrder(),
-                        change: self.changeOrder()
-                    };
-                initData(sortName, order[sortName]);
+                initData();
             });
 
             this.get('#:folder/:categoryId', function() {
                 self.chosenCategoryId(this.params.categoryId);
                 self.chosenFolderId(this.params.folder);
-                var sortName = self.sortingName(),
-                    order = {
-                        amount: self.amountOrder(),
-                        change: self.changeOrder()
-                    };
-                initData(sortName, order[sortName]);
+                initData();
             });
 
             this.get('', function() {

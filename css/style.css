@@ -119,9 +119,7 @@ a {
 #detail {
     background-color: #333;
     color: #fff;
-    /*display: none;*/
     width: 180px;
-    height: 80px;
     position: absolute;
     left: 100px;
     top: 200px;

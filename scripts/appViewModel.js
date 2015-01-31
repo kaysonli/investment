@@ -11,13 +11,15 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
             });
             loaded[i] = false;
         }
+        self.withScope = ko.observable();
         self.folders = folders;
         self.chosenFolderId = ko.observable();
-        self.chosenFolderData = ko.observable({});
+        self.chosenFolderData = ko.observable();
         self.chosenCategoryId = ko.observable();
-        self.chosenCategoryData = ko.observable({});
+        self.chosenCategoryData = ko.observable();
         self.amountOrder = ko.observable('desc');
         self.changeOrder = ko.observable('desc');
+        self.sortingName = ko.observable('amount');
         self.tooltipData = ko.observable({
             tipItems: []
         });
@@ -44,6 +46,7 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
         };
 
         self.sortAmount = function() {
+            self.sortingName('amount');
             var order = self.amountOrder;
             if (order() === 'desc') {
                 order('asc');
@@ -54,6 +57,7 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
         };
 
         self.sortChange = function() {
+            self.sortingName('change');
             var order = self.changeOrder;
             if (order() === 'desc') {
                 order('asc');
@@ -156,10 +160,10 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
                 categoryId = self.chosenCategoryId();
             if (categoryId != null) {
                 updateCategory(folderId, categoryId, sortName, sortOrder);
-                self.chosenFolderData({});
+                self.chosenFolderData(null);
             } else {
                 updateFolder(folderId, sortName, sortOrder);
-                self.chosenCategoryData({});
+                self.chosenCategoryData(null);
             }
         }
 
@@ -167,13 +171,23 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
             this.get('#:folder', function() {
                 self.chosenFolderId(this.params.folder);
                 self.chosenCategoryId(null);
-                initData();
+                var sortName = self.sortingName(),
+                    order = {
+                        amount: self.amountOrder(),
+                        change: self.changeOrder()
+                    };
+                initData(sortName, order[sortName]);
             });
 
             this.get('#:folder/:categoryId', function() {
                 self.chosenCategoryId(this.params.categoryId);
                 self.chosenFolderId(this.params.folder);
-                initData();
+                var sortName = self.sortingName(),
+                    order = {
+                        amount: self.amountOrder(),
+                        change: self.changeOrder()
+                    };
+                initData(sortName, order[sortName]);
             });
 
             this.get('', function() {

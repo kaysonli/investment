@@ -51,18 +51,22 @@
                 <label>-10%</label><div class="legend-bar"></div><label>10%</label>
             </li>
         </ul>
-        <ul class="folder-content" data-bind="foreach: chosenFolderData().items">
+        <!-- ko with: chosenFolderData -->
+        <ul class="folder-content" data-bind="foreach: items">
             <li class="category" data-bind="css: { down: change <= 0, up: change > 0}, click: $root.goToCategory">
-                <div class="main" data-bind="quote: {amount: amount, change: change, maxAmount: $root.chosenFolderData().maxAmount}, event: { mouseover: $root.showDetail, mouseout: $root.hideDetail }"></div>
+                <div class="main" data-bind="quote: {amount: amount, change: change, maxAmount: $parent.maxAmount}, event: { mouseover: $root.showDetail, mouseout: $root.hideDetail }"></div>
                 <div class="title" data-bind="text: name"></div>
             </li>
         </ul>
-        <ul class="category-content" data-bind="foreach: chosenCategoryData().items">
+        <!-- /ko -->
+        <!-- ko with: chosenCategoryData -->
+        <ul class="category-content" data-bind="foreach: items">
             <li class="category" data-bind="css: { down: change <= 0, up: change > 0}">
-                <div class="main" data-bind="quote: {amount: amount, change: change, maxAmount: $root.chosenCategoryData().maxAmount}, event: { mouseover: $root.showDetail, mouseout: $root.hideDetail }"></div>
+                <div class="main" data-bind="quote: {amount: amount, change: change, maxAmount: $parent.maxAmount}, event: { mouseover: $root.showDetail, mouseout: $root.hideDetail }"></div>
                 <div class="title" data-bind="text: name"></div>
             </li>
         </ul>
+        <!-- /ko -->
     </div>
     <div id="mask">
         <div class="loading-box"></div>

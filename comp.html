@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/components.css">
+		<script data-main="scripts/component" src="scripts/require.js"></script>
+		<title>Test component</title>
+	</head>
+	<body>
+		<ul id="nav" class="clearfix folders" data-bind="foreach: menuItems">
+			<li class="menu-main" data-bind="click: $root.chooseMenu,
+				event: { mouseover: $root.showMenuItems, mouseout: $root.hideMenuItems },
+				css: { selected: id == $root.chosenMenuId() }" class="nav-item">
+				<p data-bind="text: text"></p>
+				<ul data-bind="foreach: items, visible: visible" class="item-panel">
+					<li><a href="#" data-bind="text: $data"></a></li>
+				</ul>
+			</li>
+	</ul>
+</body>
+</html>

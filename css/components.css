@@ -5,11 +5,14 @@ p, ul, li {
 ul {
 	list-style-type: none;
 }
-.folders { background-color: #bbb; padding: 0; margin: 0; border-radius: 7px; 
+
+.folders {
+    background-color: #bbb; padding: 0; margin: 0; border-radius: 7px; 
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #d6d6d6), color-stop(0.4, #c0c0c0), color-stop(1,#a4a4a4)); 
     margin: 10px 0 16px 0;
     font-size: 0px;
 }
+
 .folders .menu-main:hover { background-color: #ddd; }    
 .folders .menu-main:first-child { border-left: none; border-radius: 7px 0 0 7px; }
 .folders .menu-main { position: relative; font-size: 16px; font-weight: bold; display: inline-block; padding: 0.5em 1.5em; cursor: pointer; color: #444; text-shadow: #f7f7f7 0 1px 1px; border-left: 1px solid #ddd; border-right: 1px solid #888; }

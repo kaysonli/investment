@@ -43,7 +43,7 @@
                 </select>
             </li>
             <li><span id="time"></span></li>
-            <li><button class="btn" id="btnSettings">
+            <li><button class="btn" id="btnSettings" data-bind="click: $root.setHoldings">
                     <i></i> 桌面通知
                 </button></li>
             <li class="legend">
@@ -67,7 +67,7 @@
         </ul>
         <!-- /ko -->
     </div>
-    <div id="mask">
+    <div id="mask" class="mask">
         <div class="loading-box"></div>
     </div>
     <!-- ko with: tooltipData -->
@@ -81,7 +81,16 @@
         </ul>
     </div>
     <!-- /ko -->
-
+    <div class="mask" data-bind="visible: $root.showWindow">
+        <div class="win-modal">
+            <h3 class="center">输入基金持仓JSON</h3>
+           <textarea class="holdings" name="" id="" cols="30" rows="10" data-bind="textInput: holdings"></textarea>
+           <p class="center">
+               <input type="button" class="btn" data-bind="click: saveHoldings" value="OK" />
+               <input type="button" class="btn" data-bind="click: giveUp" value="Cancel" />
+           </p>
+        </div>
+    </div>
 </body>
 
 </html>

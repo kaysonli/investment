@@ -2,16 +2,16 @@ define(['./helper/util', './quotation', './data/holdings'], function(util, quote
     var fundShares = holdings.fund,
         myStocks = holdings.stock;
 
-    function saveFunds(fundShares) {
+    function saveFunds(funds) {
         if (localStorage) {
-            localStorage.setItem('fund', JSON.stringify(fundShares));
+            localStorage.setItem('fund', JSON.stringify(funds));
         } else {
-            util.setCookie('fund', JSON.stringify(fundShares));
+            util.setCookie('fund', JSON.stringify(funds));
         }
     }
 
     function getFunds() {
-        var str = '{}';
+        var str = '[]';
         if (localStorage) {
             str = localStorage.getItem('fund');
         } else {
@@ -158,6 +158,10 @@ define(['./helper/util', './quotation', './data/holdings'], function(util, quote
             }
         }
 
+        var savedFunds = getFunds();
+        if(savedFunds.length > 0) {
+            fundShares = savedFunds;
+        }
 
         quote.getFund(fundShares, function(data) {
             ++counter;
@@ -181,6 +185,7 @@ define(['./helper/util', './quotation', './data/holdings'], function(util, quote
         display: function() {
             loadData();
         },
-        getFunds: getFunds
+        getFunds: getFunds,
+        saveFunds: saveFunds
     };
 });

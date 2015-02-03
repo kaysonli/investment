@@ -106,8 +106,7 @@ a {
     margin-top: -72px;
 }
 
-#mask {
-    display: none;
+.mask {
     position: absolute;
     left: 0;
     top: 0;
@@ -187,6 +186,7 @@ a {
     text-align: center;
     vertical-align: middle;
     cursor: pointer;
+    min-width: 90px;
 }
 
 .actions li.legend {
@@ -215,4 +215,26 @@ a {
 .folder-content li {
     height: 20px;
     position: relative;
+}
+
+.win-modal {
+    width: 500px;
+    height: 290px;
+    left: 50%;
+    top: 50%;
+    margin-left: -250px;
+    margin-top: -210px;
+    position: absolute;
+    background-color: #eee;
+}
+
+.holdings {
+    width: 90%;
+    height: 200px;
+    margin: 10px auto;
+    display: block;
+}
+
+.center {
+    text-align: center;
 }

@@ -1,4 +1,4 @@
-define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function(ko, Sammy, util, stock, engine) {
+define(['./ko', './sammy', './helper/util', './data/stock', './stock', './estimate'], function(ko, Sammy, util, stock, engine, estimate) {
     return function appViewModel() {
         var folders = [],
             ds = stock.dataSource,
@@ -22,10 +22,25 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock'], function
         self.sortingName = 'amount';
         self.tooltipData = ko.observable();
         self.showTooltip = ko.observable(false);
-        self.autoRefresh = false
+        self.autoRefresh = false;
         self.frequency = 10;
+        self.showWindow = ko.observable(false);
+        self.holdings = ko.observable(JSON.stringify(estimate.getFunds()));
 
         var timer;
+
+        self.setHoldings = function() {
+            self.showWindow(true);
+        };
+
+        self.saveHoldings = function() {
+            estimate.saveFunds(JSON.parse(self.holdings()));
+            self.showWindow(false);
+        };
+
+        self.giveUp = function() {
+            self.showWindow(false);
+        };
 
         self.toggleAutoRefresh = function() {
             self.autoRefresh = !self.autoRefresh;

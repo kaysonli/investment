@@ -1,0 +1,7 @@
+<div>
+    <input type="text" data-bind="textInput: displayText, visible: editing, hasFocus: editing" />
+    <label for="" data-bind="text: displayText, visible: !editing(), click: edit"></label>
+</div>
+<ul data-bind="foreach: options, visible: editing">
+    <li data-bind="text: name"></li>
+</ul>

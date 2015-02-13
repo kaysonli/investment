@@ -25,9 +25,19 @@ define(['./ko', './sammy', './helper/util', './data/stock', './stock', './estima
         self.autoRefresh = false;
         self.frequency = 10;
         self.showWindow = ko.observable(false);
+        self.bodyVisible = ko.observable(true);
         self.holdings = ko.observable(JSON.stringify(estimate.getFunds()));
 
         var timer;
+
+        self.onKeyDown = function(data, e) {
+            if(e.keyCode === 27) {// ESC key
+                var current = self.bodyVisible();
+                self.bodyVisible(!current);
+            } else {
+                return true;
+            }
+        };
 
         self.setHoldings = function() {
             self.showWindow(true);

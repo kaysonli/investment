@@ -10,7 +10,7 @@
     <script data-main="scripts/index" src="scripts/require.js"></script>
 </head>
 
-<body>
+<body data-bind="event: {keydown: onKeyDown}, visible: bodyVisible">
     <div class="container">
         <ul id="nav" class="clearfix folders" data-bind="foreach: folders">
             <li data-bind="text: name, 

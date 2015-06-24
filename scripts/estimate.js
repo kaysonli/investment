@@ -95,7 +95,7 @@ define(['./helper/util', './quotation', './data/holdings'], function(util, quote
         var capacity = 5,
             pos = 0;
         var deferredTimer = -1;
-        if(!switchOn) {
+        if (!switchOn) {
             return;
         }
         while (true) {
@@ -159,22 +159,32 @@ define(['./helper/util', './quotation', './data/holdings'], function(util, quote
         }
 
         var savedFunds = getFunds();
-        if(savedFunds.length > 0) {
+        if (savedFunds.length > 0) {
             fundShares = savedFunds;
         }
 
-        quote.getFund(fundShares, function(data) {
-            ++counter;
-            totalFundReward = estimateValues(fundShares);
-            if (counter === 2) {
-                notify();
-            }
-        });
-        quote.getStock(myStocks, function(data) {
-            ++counter;
-            if (counter === 2) {
-                notify();
-            }
+        $.ajax({
+            url: 'RealFundDefault.aspx'
+        }).done(function(res) {
+            var fundShares = JSON.parse(res);
+            fundShares.sort(function(a, b) {
+                var rateA = +a.totalRewardRate.replace('%', ''),
+                    rateB = +b.totalRewardRate.replace('%', '');
+                return rateB - rateA;
+            });
+            quote.getFund(fundShares, function(data) {
+                ++counter;
+                totalFundReward = estimateValues(fundShares);
+                if (counter === 2) {
+                    notify();
+                }
+            });
+            quote.getStock(myStocks, function(data) {
+                ++counter;
+                if (counter === 2) {
+                    notify();
+                }
+            });
         });
     }
 

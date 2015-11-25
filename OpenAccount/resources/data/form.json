@@ -1,0 +1,63 @@
+{
+    "steps": {
+        "idcard-front": {
+            "data": {
+                "url": "resources/front.png",
+                "name": "Tom",
+                "address": "广东省深圳市福田区",
+                "number": "112223199008139978"
+            }
+        },
+        "idcard-back": {
+            "data": {
+                "url": "resources/back.png"
+            }
+        },
+        "supplement-main": {
+            "current": "preference",
+            "data": {
+                "profile": {
+                    "name": "张三丰",
+                    "nationality": "中国",
+                    "idCard": "112223199008139978",
+                    "phone": "13800138000",
+                    "employment": "",
+                    "company": "武当山"
+                },
+                "preference": {
+                    "income": "",
+                    "assets": "",
+                    "knowledge": "",
+                    "goal": "",
+                    "tradeFreq": "",
+                    "riskTolerance": "",
+                    "experience": ""
+                },
+                "others": {
+                    "derivatives": true,
+                    "owner": true,
+                    "independent": false,
+                    "nonHolder": true
+                },
+                "riskDisclosure": {
+                    "derivatives": true,
+                    "assessment": true
+                }
+            }
+        },
+        "reservation-main": {
+            "current": "location",
+            "data": {
+                "email": {
+                    "email": "123@abc.com"
+                },
+                "location": {
+                    "city": "深圳",
+                    "location": "车公庙",
+                    "time": "2015-11-21"
+                }
+            }
+        }
+    },
+    "current": "reservation-main"
+}
